@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Scenario</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <a href="trainer-dashboard.html">← Back to Dashboard</a>
+    </div>
+    <h1>Edit Scenario</h1>
+    <div id="editNote" style="margin:8px 0;color:#555;"></div>
+
+    <form id="editForm">
+      <label>Title
+        <input type="text" name="title" style="width:100%;" required>
+      </label>
+      <label>Description
+        <textarea name="description" rows="3" style="width:100%;"></textarea>
+      </label>
+      <label>Initial Situation
+        <textarea name="initialText" rows="4" style="width:100%;" required></textarea>
+      </label>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <label style="flex:1;min-width:220px;">Rounds
+          <input type="number" name="numRounds" min="1" max="20" value="5" style="width:100%;">
+        </label>
+        <label style="flex:1;min-width:220px;">Response Timer (s)
+          <input type="number" name="responseTimerSec" min="10" max="900" value="120" style="width:100%;">
+        </label>
+        <label style="flex:1;min-width:220px;">Template
+          <select name="templateType" style="width:100%;">
+            <option value="fire">Fire</option>
+            <option value="theft">Theft</option>
+            <option value="cyber">Cyber</option>
+            <option value="civil_unrest">Civil Unrest</option>
+            <option value="natural_disaster">Natural Disaster</option>
+            <option value="custom">Custom</option>
+          </select>
+        </label>
+      </div>
+      <div style="margin-top:16px;">
+        <button type="submit" id="saveBtn" style="background:#1d5fff;">Save</button>
+      </div>
+    </form>
+  </div>
+  <script src="trainer-edit-scenario.js"></script>
+</body>
+</html>
+
+

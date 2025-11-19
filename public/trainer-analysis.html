@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trainer Analysis</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .analysis-section { border:1px solid #ccc; border-radius:8px; padding:16px; margin-bottom:18px; background:#fafbff; }
+    .section-title { font-size:18px; font-weight:600; }
+    .field-label { font-weight:bold; margin-top:8px; display:block; }
+    textarea { width:100%; min-height:40px; resize:vertical; font-size:15px; border-radius:4px; margin-top:4px; }
+    .form-row { margin-bottom:8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Trainer Analysis Form</h1>
+    
+    <div id="sessionInfo" style="background:#e8f4fd;border:1px solid #2196F3;padding:16px;border-radius:8px;margin-bottom:20px;">
+      <h3 style="margin:0 0 8px 0;color:#1976D2;">Session Information</h3>
+      <div id="sessionDetails"></div>
+    </div>
+    
+    <h2>Team Responses by Round</h2>
+    <div id="responsesSection" style="margin-bottom:24px;">
+      <!-- Responses will be displayed grouped by round with team member names -->
+    </div>
+    
+    <h2>Analysis</h2>
+    <form id="analysisForm">
+      <div class="analysis-section">
+        <div class="section-title">1. Behavioural Interpretation</div>
+        <div class="form-row">
+          <label class="field-label">Emotional Tone</label>
+          <textarea id="emotionalTone" name="emotionalTone"></textarea>
+        </div>
+        <div class="form-row">
+          <label class="field-label">Cognitive State</label>
+          <textarea id="cognitiveState" name="cognitiveState"></textarea>
+        </div>
+        <div class="form-row">
+          <label class="field-label">Behavioural Signals</label>
+          <textarea id="behaviouralSignals" name="behaviouralSignals"></textarea>
+        </div>
+      </div>
+      <div class="analysis-section">
+        <div class="section-title">2. What could have been better</div>
+        <textarea id="whatCouldBeBetter" name="whatCouldBeBetter"></textarea>
+      </div>
+      <div class="analysis-section">
+        <div class="section-title">3. How each team performed</div>
+        <textarea id="teamPerformance" name="teamPerformance"></textarea>
+      </div>
+      <div style="display:flex;gap:18px;">
+        <button type="button" id="completeBtn" style="background:#2ec965;color:#fff;">Submit Analysis & Mark Complete</button>
+        <button type="button" id="backBtn" style="background:#aaa;color:#fff;">Back</button>
+      </div>
+      <div id="feedbackMsg" style="margin-top:18px; color:#29892f;font-weight:bold;"></div>
+    </form>
+  </div>
+  <script src="trainer-analysis.js"></script>
+</body>
+</html>

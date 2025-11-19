@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trainer Sessions</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Sessions</h1>
+    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+      <a href="trainer-dashboard.html">← Back to Dashboard</a>
+      <a href="trainer-sessions-archived.html">View Archived Sessions</a>
+    </div>
+
+    <h3>Create Team Session</h3>
+    <div style="border:1px solid #ddd;padding:16px;border-radius:8px;background:#fafbff;margin-bottom:20px;">
+      <label style="display:block;margin-bottom:12px;">Scenario
+        <select id="scenarioSelect" style="width:100%;padding:8px;"></select>
+      </label>
+      
+      <div style="margin-bottom:12px;">
+        <strong>Team Members (1-5 Users):</strong>
+        <div id="teamMembersContainer" style="margin-top:8px;">
+          <!-- Team member rows will be added dynamically -->
+        </div>
+        <button type="button" id="addTeamMemberBtn" style="width:auto;background:#555;color:white;margin-top:8px;">+ Add Team Member</button>
+        <span id="teamCountMsg" style="margin-left:12px;color:#666;"></span>
+      </div>
+      
+      <div style="display:flex;gap:10px;">
+        <button id="createSessionBtn" style="width:auto;background:#2ec965;color:white;">Create Team Session</button>
+        <button id="refreshBtn" style="width:auto;background:#555;color:white;">Refresh</button>
+      </div>
+    </div>
+
+    <h3 style="margin-top:20px;">All Sessions</h3>
+    <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+      <thead>
+        <tr style="border-bottom:1px solid #888"><th>Scenario</th><th>Team Members</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody id="sessionsBody"></tbody>
+    </table>
+
+  </div>
+  <script src="trainer-sessions.js"></script>
+</body>
+</html>

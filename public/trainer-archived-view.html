@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Archived Session Detail</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <a href="trainer-sessions-archived.html">← Back to Archived</a>
+      <a href="trainer-sessions.html">Go to Sessions</a>
+    </div>
+    <h1>Archived Session</h1>
+    <div id="meta"></div>
+
+    <h2 style="margin-top:24px;">User Responses</h2>
+    <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+      <thead><tr style="border-bottom:1px solid #888"><th>Round</th><th>Scenario</th><th>Response</th></tr></thead>
+      <tbody id="respBody"></tbody>
+    </table>
+
+    <h2 style="margin-top:30px;">Trainer Analysis</h2>
+    <div id="analysisSection" style="margin-top:12px;"></div>
+  </div>
+  <script src="trainer-archived-view.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .session-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      background: #fafbff;
+      transition: box-shadow 0.3s;
+    }
+    .session-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .session-title {
+      font-size: 22px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 12px;
+    }
+    .team-info {
+      font-size: 18px;
+      color: #2ec965;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .session-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .status-active {
+      background: #d4edda;
+      color: #155724;
+    }
+    .status-completed {
+      background: #cce5ff;
+      color: #004085;
+    }
+    .start-btn {
+      background: #2ec965;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .start-btn:hover {
+      background: #27a956;
+    }
+    .start-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .no-sessions {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>My Assigned Scenarios</h1>
+    <div id="userInfo" style="margin-bottom:20px;"></div>
+    
+    <div id="sessionsContainer">
+      <div class="no-sessions">Loading your assigned scenarios...</div>
+    </div>
+    
+    <form id="logoutForm" style="margin-top:24px;">
+      <button type="submit">Logout</button>
+    </form>
+  </div>
+  <script src="user-dashboard.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trainer Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Trainer Dashboard</h1>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:-40px;align-items:center;">
+      <button onclick="location.href='trainer-sessions.html'" style="max-width:220px">View Sessions</button>
+      <button id="createScenarioBtn" style="max-width:220px;background:#1d5fff">+ Create Scenario</button>
+    </div>
+
+    <div style="margin-top:18px;display:flex;gap:8px;">
+      <button class="tabBtn" data-filter="">All</button>
+      <button class="tabBtn" data-filter="draft">Draft</button>
+      <button class="tabBtn" data-filter="active">Active</button>
+      <button class="tabBtn" data-filter="archived">Archived</button>
+    </div>
+
+    <div id="scenarioList" style="margin-top:18px;"></div>
+    <div id="emptyState" style="text-align:center;color:#666;margin:40px 0;display:none;">
+      <div style="font-size:80px;opacity:0.4">🗃️</div>
+      <div>No scenarios found</div>
+      <a href="#" id="createFirstLink">Create your first scenario</a>
+    </div>
+
+    <form id="logoutForm" style="margin-top:24px;"><button type="submit">Logout</button></form>
+  </div>
+
+  <script src="trainer.js"></script>
+</body>
+</html>

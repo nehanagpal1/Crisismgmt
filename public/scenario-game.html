@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scenario Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container" id="gameContainer">
+    <h1>Scenario Response Game</h1>
+    <div id="userInfo"></div>
+    <div id="customRole" style="font-size:20px;font-weight:bold;color:#2ec965;margin-bottom:12px;display:none;"></div>
+    <div id="roundInfo">Round: <span id="roundNum">1</span>/5</div>
+    <div id="timer">Time left: <span id="timeLeft">120</span> seconds</div>
+    <div class="scenario-block">
+      <div id="scenarioText">A fire starts in the community! What will your team do?</div>
+    </div>
+    <form id="responseForm">
+      <textarea id="teamResponse" placeholder="Enter your response... (Ctrl+Enter to submit early)" required rows="3"></textarea>
+      <button type="submit" id="submitEarlyBtn" style="background:#2ec965;color:white;margin-top:8px;">Submit Response</button>
+      <div id="autoSubmitMsg" style="color:#e74c3c;font-weight:600;margin-top:8px;display:none;">Auto-submitting when timer reaches 0...</div>
+    </form>
+    <div id="feedback"></div>
+    <div id="waitingMsg" style="background:#fff3cd;border:1px solid #ffc107;padding:12px;border-radius:6px;margin-top:12px;display:none;"></div>
+    <form id="logoutForm" style="margin-top:24px;"><button type="submit">Logout</button></form>
+  </div>
+  <div class="container" id="summaryContainer" style="display:none;">
+    <h2>Game Summary</h2>
+    <div id="summaryRounds"></div>
+    <button onclick="location.href='/user-dashboard.html'">Back to Dashboard</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+  <script src="scenario.js"></script>
+</body>
+</html>
+
+

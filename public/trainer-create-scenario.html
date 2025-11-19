@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create New Scenario</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div><a href="trainer-dashboard.html">← Back to Dashboard</a></div>
+    <h1>Create New Scenario</h1>
+    <p>Design a realistic crisis simulation for your team</p>
+
+    <form id="createScenarioForm">
+      <h3>Template Type</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+        <label style="border:1px solid #ddd;border-radius:8px;padding:14px;display:flex;gap:10px;align-items:center;cursor:pointer;">
+          <input type="radio" name="templateType" value="fire" checked> Fire Emergency
+        </label>
+        <label style="border:1px solid #ddd;border-radius:8px;padding:14px;display:flex;gap:10px;align-items:center;cursor:pointer;">
+          <input type="radio" name="templateType" value="theft"> Theft
+        </label>
+        <label style="border:1px solid #ddd;border-radius:8px;padding:14px;display:flex;gap:10px;align-items:center;cursor:pointer;">
+          <input type="radio" name="templateType" value="cyber"> Cyber Attack
+        </label>
+        <label style="border:1px solid #ddd;border-radius:8px;padding:14px;display:flex;gap:10px;align-items:center;cursor:pointer;">
+          <input type="radio" name="templateType" value="civil_unrest"> Civil Unrest
+        </label>
+        <label style="border:1px solid #ddd;border-radius:8px;padding:14px;display:flex;gap:10px;align-items:center;cursor:pointer;">
+          <input type="radio" name="templateType" value="natural_disaster"> Natural Disaster
+        </label>
+        <label style="border:1px solid #ddd;border-radius:8px;padding:14px;display:flex;gap:10px;align-items:center;cursor:pointer;">
+          <input type="radio" name="templateType" value="custom"> Custom Scenario
+        </label>
+      </div>
+
+      <h3 style="margin-top:20px;">Scenario Title</h3>
+      <input type="text" name="title" placeholder="e.g., Fire in Manufacturing Area" required style="width:100%;">
+
+      <h3 style="margin-top:16px;">Description</h3>
+      <textarea name="description" placeholder="Brief overview of the scenario..." rows="3" style="width:100%;"></textarea>
+
+      <h3 style="margin-top:16px;">Initial Situation</h3>
+      <textarea name="initialText" placeholder="Describe the starting situation in detail..." rows="4" style="width:100%;" required></textarea>
+
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:16px;">
+        <div style="flex:1;min-width:220px;">
+          <label>Number of Rounds</label>
+          <input type="number" name="numRounds" value="5" min="1" max="20" style="width:100%;">
+        </div>
+        <div style="flex:1;min-width:220px;">
+          <label>Response Timer (seconds)</label>
+          <input type="number" name="responseTimerSec" value="120" min="10" max="900" style="width:100%;">
+        </div>
+      </div>
+
+      <div style="margin-top:18px;display:flex;gap:10px;">
+        <button type="submit" style="background:#1d5fff;">Create Scenario</button>
+        <button type="button" onclick="location.href='trainer-dashboard.html'" style="background:#777;">Cancel</button>
+      </div>
+    </form>
+  </div>
+  <script src="trainer-create-scenario.js"></script>
+</body>
+</html>
+
+
