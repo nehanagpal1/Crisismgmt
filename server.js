@@ -8,6 +8,7 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/auth');
 const scenarioRoutes = require('./routes/scenario');
@@ -25,12 +26,20 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Use MongoDB-backed session store so sessions persist across serverless invocations
 app.use(session({
     secret: process.env.SESSION_SECRET || 'supersecret-key',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: MONGODB_URI,
+        collectionName: 'sessions',
+        ttl: 24 * 60 * 60 // 1 day in seconds
+    }),
     cookie: {
         secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax',
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
