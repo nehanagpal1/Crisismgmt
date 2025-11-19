@@ -18,6 +18,9 @@ const userRoutes = require('./routes/user');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy so secure cookies work correctly behind Vercel/Proxies
+app.set('trust proxy', 1);
+
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/login-module';
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -32,6 +35,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'supersecret-key',
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     store: MongoStore.create({
         mongoUrl: MONGODB_URI,
         collectionName: 'sessions',
