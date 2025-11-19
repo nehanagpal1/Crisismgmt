@@ -36,15 +36,19 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     proxy: true,
+    name: 'sessionId',
     store: MongoStore.create({
         mongoUrl: MONGODB_URI,
         collectionName: 'sessions',
-        ttl: 24 * 60 * 60 // 1 day in seconds
+        ttl: 24 * 60 * 60, // 1 day in seconds
+        touchAfter: 24 * 3600 // lazy session update
     }),
     cookie: {
         secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : undefined
     }
 }));
 
