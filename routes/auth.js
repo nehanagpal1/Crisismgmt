@@ -36,17 +36,28 @@ router.post('/login', async (req, res) => {
         req.session.role = user.role;
         
         // Save session explicitly before responding (important for serverless)
-        await new Promise((resolve, reject) => {
-            req.session.save((err) => {
-                if (err) {
-                    console.error('Session save error:', err);
-                    reject(err);
-                } else {
-                    console.log('[Login] Session saved successfully for user:', user.username, 'SessionID:', req.sessionID);
-                    resolve();
-                }
+        try {
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    console.warn('[Login] Session save timeout, continuing anyway');
+                    resolve(); // Don't block the response
+                }, 3000); // 3 second timeout
+                
+                req.session.save((err) => {
+                    clearTimeout(timeout);
+                    if (err) {
+                        console.error('Session save error:', err);
+                        resolve(); // Continue anyway - session might auto-save
+                    } else {
+                        console.log('[Login] Session saved successfully for user:', user.username, 'SessionID:', req.sessionID);
+                        resolve();
+                    }
+                });
             });
-        });
+        } catch (saveErr) {
+            console.error('[Login] Session save failed:', saveErr);
+            // Continue anyway - session middleware might handle it
+        }
         
         // Add role-based redirect info for frontend
         let redirect;
