@@ -68,6 +68,8 @@ app.get('/', (req, res) => {
     if (req.session.user) {
         if (req.session.role === 'user') {
             return res.redirect('/user-dashboard.html');
+        } else if (req.session.role === 'admin') {
+            return res.redirect('/admin-dashboard.html');
         } else {
             return res.redirect('/trainer-dashboard.html');
         }

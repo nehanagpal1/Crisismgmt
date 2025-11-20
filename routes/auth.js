@@ -61,8 +61,13 @@ router.post('/login', async (req, res) => {
         
         // Add role-based redirect info for frontend
         let redirect;
-        if (user.role === 'user') redirect = '/user-dashboard.html';
-        else redirect = '/trainer-dashboard.html';
+        if (user.role === 'user') {
+            redirect = '/user-dashboard.html';
+        } else if (user.role === 'admin') {
+            redirect = '/admin-dashboard.html';
+        } else {
+            redirect = '/trainer-dashboard.html';
+        }
         res.json({ success: true, role: user.role, username: user.username, redirect });
     } catch (e) {
         console.error('Login error:', e);
