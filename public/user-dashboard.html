@@ -2,23 +2,308 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>User Dashboard</title>
+  <title>Participant Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #0f1419;
+      color: #e2e8f0;
+    }
+    
+    .dashboard-container {
+      background: #0f1419;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 40px;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 48px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .app-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    .header-title h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+      text-align: left;
+    }
+    
+    .header-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin: 2px 0 0 0;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .user-info {
+      text-align: right;
+    }
+    
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin: 0;
+    }
+    
+    .user-role {
+      font-size: 12px;
+      color: #64748b;
+      margin: 2px 0 0 0;
+    }
+    
+    .logout-btn {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 8px 16px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .logout-btn:hover {
+      background: #1e293b;
+      border-color: #475569;
+      transform: none;
+    }
+    
+    /* Welcome Section */
+    .welcome-section {
+      margin-bottom: 48px;
+    }
+    
+    .welcome-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 0 8px 0;
+    }
+    
+    .welcome-subtitle {
+      font-size: 15px;
+      color: #94a3b8;
+      margin: 0;
+    }
+    
+    /* Sessions Section */
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0 0 24px 0;
+    }
+    
+    .session-card {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+    
+    .session-card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+    }
+    
+    .session-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    
+    .session-info h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0 0 8px 0;
+    }
+    
+    .session-meta {
+      font-size: 14px;
+      color: #94a3b8;
+      margin: 4px 0;
+    }
+    
+    .session-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .badge-live {
+      background: #f59e0b;
+      color: #000000;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .badge-live::before {
+      content: '▶';
+      font-size: 10px;
+    }
+    
+    .participants-info {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-top: 8px;
+    }
+    
+    .btn-join {
+      background: #3b82f6;
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-join:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    
+    .btn-join:disabled {
+      background: #334155;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .session-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    
+    .status-active {
+      background: #065f46;
+      color: #6ee7b7;
+    }
+    
+    .status-completed {
+      background: #1e40af;
+      color: #93c5fd;
+    }
+    
+    .status-submitted {
+      background: #7c3aed;
+      color: #c4b5fd;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #64748b;
+    }
+    
+    .empty-state-icon {
+      font-size: 64px;
+      opacity: 0.3;
+      margin-bottom: 20px;
+    }
+    
+    .empty-state-text {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    
+    .empty-state-subtext {
+      font-size: 14px;
+      color: #475569;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>My Assigned Scenarios</h1>
-    <div id="userInfo" style="margin-bottom:20px;"></div>
-    
-    <div id="sessionsContainer">
-      <div class="no-sessions">Loading your assigned scenarios...</div>
+  <div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+      <div class="header-left">
+        <div class="app-icon">📊</div>
+        <div class="header-title">
+          <h1>Crisis Response Training</h1>
+          <p class="header-subtitle">Participant Dashboard</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="user-info">
+          <p class="user-name" id="userName">Loading...</p>
+          <p class="user-role" id="userTeam">Participant</p>
+        </div>
+        <form id="logoutForm" style="margin:0;">
+          <button type="submit" class="logout-btn">
+            <span>↪</span> Logout
+          </button>
+        </form>
+      </div>
     </div>
-    
-    <form id="logoutForm" style="margin-top:24px;">
-      <button type="submit">Logout</button>
-    </form>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h1 class="welcome-title">Welcome, <span id="welcomeName">Participant</span></h1>
+      <p class="welcome-subtitle">You are part of the <span id="welcomeTeam">Training Team</span></p>
+    </div>
+
+    <!-- Sessions Section -->
+    <h2 class="section-title">Your Sessions</h2>
+    <div id="sessionsContainer">
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-text">Loading your assigned sessions...</div>
+      </div>
+    </div>
   </div>
+  
   <script src="user-dashboard.js"></script>
 </body>
 </html>
-

@@ -8,7 +8,11 @@ async function fetchUserInfo() {
         return null; 
     }
     user = data;
-    document.getElementById('userInfo').innerHTML = `Logged in as: <strong>${user.username}</strong> <span class='role-badge ${user.role}-badge'>${user.role}</span>`;
+    
+    // Update header user info
+    document.getElementById('userName').textContent = user.username || 'Participant';
+    document.getElementById('welcomeName').textContent = user.username || 'Participant';
+    
     return data;
 }
 
@@ -25,58 +29,69 @@ function renderSessions(sessions) {
     const container = document.getElementById('sessionsContainer');
     
     if (!sessions || sessions.length === 0) {
-        container.innerHTML = '<div class="no-sessions">No scenarios assigned yet. Please wait for your trainer to assign scenarios.</div>';
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <div class="empty-state-text">No scenarios assigned yet</div>
+                <div class="empty-state-subtext">Please wait for your trainer to assign scenarios</div>
+            </div>
+        `;
         return;
     }
     
     container.innerHTML = '';
     
+    // Update welcome team info with first session's custom name
+    if (sessions[0] && sessions[0].customName) {
+        document.getElementById('userTeam').textContent = sessions[0].customName;
+        document.getElementById('welcomeTeam').textContent = sessions[0].customName;
+    }
+    
     sessions.forEach(session => {
         const card = document.createElement('div');
         card.className = 'session-card';
         
-        const title = document.createElement('div');
-        title.className = 'session-title';
-        title.textContent = session.scenarioTitle || 'Untitled Scenario';
+        const isActive = session.status === 'active';
+        const isCompleted = session.status === 'completed' || session.status === 'submitted';
         
-        const teamInfo = document.createElement('div');
-        teamInfo.className = 'team-info';
-        if (session.customName) {
-            teamInfo.textContent = `Your Role: ${session.customName}`;
-        } else {
-            teamInfo.textContent = `Team Member`;
-        }
-        
-        const teamSize = document.createElement('div');
-        teamSize.style.cssText = 'font-size:14px;color:#666;margin-bottom:8px;';
-        teamSize.textContent = `Team Size: ${session.teamSize || 1} member(s)`;
-        
-        const status = document.createElement('span');
-        status.className = `session-status status-${session.status}`;
-        status.textContent = session.status.charAt(0).toUpperCase() + session.status.slice(1);
-        
-        const startBtn = document.createElement('button');
-        startBtn.className = 'start-btn';
-        startBtn.textContent = session.status === 'active' ? 'Start Game' : 'View Results';
-        startBtn.disabled = session.status !== 'active' && session.status !== 'completed';
-        
-        startBtn.onclick = () => {
-            if (session.status === 'active') {
-                location.href = `scenario-game.html?sessionId=${session.sessionId}`;
-            } else if (session.status === 'completed') {
-                alert('This scenario has been completed. View results coming soon!');
-            }
-        };
-        
-        card.appendChild(title);
-        card.appendChild(teamInfo);
-        card.appendChild(teamSize);
-        card.appendChild(status);
-        card.appendChild(document.createElement('br'));
-        card.appendChild(startBtn);
+        card.innerHTML = `
+            <div class="session-header">
+                <div class="session-info">
+                    <h3>${session.scenarioTitle || 'Untitled Scenario'}</h3>
+                    <div class="session-meta">
+                        <span class="session-status status-${session.status}">
+                            ${session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+                        </span>
+                    </div>
+                    <div class="session-meta">
+                        ${session.customName ? `Your Role: ${session.customName}` : 'Team Member'}
+                    </div>
+                    <div class="participants-info">
+                        ${session.teamSize || 1} team member${(session.teamSize || 1) > 1 ? 's' : ''} ${isActive ? 'active' : 'in this session'}
+                    </div>
+                </div>
+                <div class="session-actions">
+                    ${isActive ? '<span class="badge-live">Live</span>' : ''}
+                    <button class="btn-join" 
+                            onclick="joinSession('${session.sessionId}', '${session.status}')"
+                            ${!isActive && !isCompleted ? 'disabled' : ''}>
+                        ${isActive ? 'Join Session' : isCompleted ? 'View Results' : 'Not Available'}
+                    </button>
+                </div>
+            </div>
+        `;
         
         container.appendChild(card);
     });
+}
+
+function joinSession(sessionId, status) {
+    if (status === 'active') {
+        location.href = `scenario-game.html?sessionId=${sessionId}`;
+    } else if (status === 'completed' || status === 'submitted') {
+        // For now, redirect to scenario game which will show the summary
+        location.href = `scenario-game.html?sessionId=${sessionId}`;
+    }
 }
 
 // Logout handler
@@ -92,4 +107,3 @@ fetchUserInfo().then(() => {
         renderSessions(sessions);
     });
 });
-
