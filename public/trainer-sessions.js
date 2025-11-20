@@ -12,43 +12,44 @@ async function ensureTrainer() {
 function updateTeamCountMsg() {
   const msg = document.getElementById('teamCountMsg');
   const addBtn = document.getElementById('addTeamMemberBtn');
-  msg.textContent = `${teamMemberCount} member(s) added`;
+  msg.textContent = `${teamMemberCount} / 5 members`;
   addBtn.disabled = teamMemberCount >= 5;
   if (teamMemberCount >= 5) {
-    msg.textContent += ' (Maximum reached)';
-    msg.style.color = '#e74c3c';
+    msg.style.color = '#f59e0b';
+    addBtn.style.opacity = '0.5';
+    addBtn.style.cursor = 'not-allowed';
   } else {
-    msg.style.color = '#666';
+    msg.style.color = '#64748b';
+    addBtn.style.opacity = '1';
+    addBtn.style.cursor = 'pointer';
   }
 }
 
 function createTeamMemberRow(index) {
   const row = document.createElement('div');
   row.className = 'team-member-row';
-  row.style.cssText = 'display:flex;gap:10px;margin-bottom:8px;align-items:center;';
   row.setAttribute('data-index', index);
   
-  const userLabel = document.createElement('label');
-  userLabel.style.flex = '1';
-  userLabel.innerHTML = `User ${index + 1}: <select class="user-select" style="width:100%;padding:6px;"></select>`;
+  const userSelect = document.createElement('select');
+  userSelect.className = 'user-select';
   
-  const nameLabel = document.createElement('label');
-  nameLabel.style.flex = '1';
-  nameLabel.innerHTML = `Custom Name/Role: <input type="text" class="custom-name" placeholder="e.g., Team Leader" style="width:100%;padding:6px;">`;
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.className = 'custom-name';
+  nameInput.placeholder = 'e.g., Team Leader, Coordinator...';
   
   const removeBtn = document.createElement('button');
   removeBtn.type = 'button';
-  removeBtn.textContent = '✕';
-  removeBtn.style.cssText = 'width:32px;height:32px;background:#e74c3c;color:white;border:none;border-radius:4px;cursor:pointer;';
+  removeBtn.textContent = '×';
+  removeBtn.title = 'Remove member';
   removeBtn.onclick = () => removeTeamMember(row);
   
-  row.appendChild(userLabel);
-  row.appendChild(nameLabel);
+  row.appendChild(userSelect);
+  row.appendChild(nameInput);
   row.appendChild(removeBtn);
   
   // Populate user dropdown
-  const select = row.querySelector('.user-select');
-  fillSelect(select, allUsers);
+  fillSelect(userSelect, allUsers);
   
   return row;
 }
@@ -117,7 +118,15 @@ async function render() {
   const [scenarios, users, sessions] = await Promise.all([loadScenarios(), loadUsers(), loadSessions()]);
   allUsers = users; // Store for dynamic team member creation
   
-  const scenarioSel=document.getElementById('scenarioSelect'); scenarioSel.innerHTML=''; scenarios.forEach(s=>{const o=document.createElement('option');o.value=s._id;o.textContent=s.title;scenarioSel.appendChild(o);});
+  // Populate scenario dropdown
+  const scenarioSel = document.getElementById('scenarioSelect');
+  scenarioSel.innerHTML = '<option value="">Choose a scenario...</option>';
+  scenarios.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s._id;
+    o.textContent = s.title;
+    scenarioSel.appendChild(o);
+  });
   
   // Initialize with one team member
   const container = document.getElementById('teamMembersContainer');
@@ -125,8 +134,30 @@ async function render() {
   teamMemberCount = 0;
   addTeamMember(); // Start with 1 member
 
+  // Update session count
+  const sessionCount = document.getElementById('sessionCount');
+  if (sessionCount) {
+    sessionCount.textContent = `${sessions.length} session${sessions.length !== 1 ? 's' : ''}`;
+  }
+
   const tbody = document.getElementById('sessionsBody');
   tbody.innerHTML = '';
+  
+  if (sessions.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4">
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <div class="empty-text">No sessions created yet</div>
+            <div class="empty-subtext">Create your first session above to get started</div>
+          </div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
   sessions.forEach(s => {
     const tr = document.createElement('tr');
     // Display team members or legacy single user
