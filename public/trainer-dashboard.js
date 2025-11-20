@@ -1,3 +1,9 @@
+// Check if admin is viewing as a trainer
+function getViewingTrainerId() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('viewAs');
+}
+
 // Ensure trainer is logged in
 async function ensureTrainer() {
   const r = await fetch('/check-session');
@@ -11,13 +17,29 @@ async function ensureTrainer() {
 
 // Load scenarios
 async function loadScenarios() {
-  const r = await fetch('/api/trainer/scenarios');
+  const viewingTrainerId = getViewingTrainerId();
+  let url = '/api/trainer/scenarios';
+  
+  // If admin is viewing as trainer, get that trainer's scenarios
+  if (viewingTrainerId) {
+    url = `/api/admin/trainer/${viewingTrainerId}/scenarios`;
+  }
+  
+  const r = await fetch(url);
   return await r.json();
 }
 
 // Load sessions
 async function loadSessions() {
-  const r = await fetch('/api/trainer/sessions');
+  const viewingTrainerId = getViewingTrainerId();
+  let url = '/api/trainer/sessions';
+  
+  // If admin is viewing as trainer, get that trainer's sessions
+  if (viewingTrainerId) {
+    url = `/api/admin/trainer/${viewingTrainerId}/sessions`;
+  }
+  
+  const r = await fetch(url);
   return await r.json();
 }
 
@@ -136,7 +158,7 @@ function renderScenarios(scenarios) {
           <button class="btn-small btn-view" onclick="location.href='trainer-edit-scenario.html?id=${scenario._id}'">
             View
           </button>
-          <button class="btn-small btn-start" onclick="location.href='trainer-sessions.html'">
+          <button class="btn-small btn-start" onclick="navigateToSessions()">
             Start Session
           </button>
           <button class="btn-small btn-delete-small" onclick="deleteScenario('${scenario._id}')">
@@ -178,8 +200,24 @@ async function deleteScenario(scenarioId) {
 ensureTrainer().then(async (user) => {
   if (!user) return;
   
-  // Set user name
-  document.getElementById('userName').textContent = user.username || 'Trainer';
+  const viewingTrainerId = getViewingTrainerId();
+  
+  // If admin is viewing as trainer, fetch trainer name
+  if (viewingTrainerId && user.role === 'admin') {
+    try {
+      const res = await fetch('/api/admin/users');
+      const users = await res.json();
+      const trainer = users.find(u => u._id === viewingTrainerId);
+      if (trainer) {
+        document.getElementById('userName').textContent = `${trainer.username} (Viewing as Admin)`;
+      }
+    } catch (err) {
+      console.error('Error loading trainer info:', err);
+    }
+  } else {
+    // Set user name
+    document.getElementById('userName').textContent = user.username || 'Trainer';
+  }
   
   // Show admin links if user is admin
   if (user.role === 'admin') {
@@ -229,9 +267,24 @@ ensureTrainer().then(async (user) => {
   renderScenarios(scenarios);
 });
 
+// Navigation with viewAs parameter
+function navigateToSessions() {
+  const viewingTrainerId = getViewingTrainerId();
+  if (viewingTrainerId) {
+    location.href = `trainer-sessions.html?viewAs=${viewingTrainerId}`;
+  } else {
+    location.href = 'trainer-sessions.html';
+  }
+}
+
 // Create scenario button
 document.getElementById('createScenarioBtn').addEventListener('click', () => {
-  location.href = 'trainer-create-scenario.html';
+  const viewingTrainerId = getViewingTrainerId();
+  if (viewingTrainerId) {
+    location.href = `trainer-create-scenario.html?viewAs=${viewingTrainerId}`;
+  } else {
+    location.href = 'trainer-create-scenario.html';
+  }
 });
 
 // Logout

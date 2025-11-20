@@ -152,8 +152,8 @@ function viewTrainerDashboard(trainerId, trainerName) {
   sessionStorage.setItem('viewingTrainerName', trainerName);
   sessionStorage.setItem('viewingAsAdmin', 'true');
   
-  // Navigate to trainer-specific dashboard
-  location.href = `trainer-view.html?trainerId=${trainerId}`;
+  // Navigate to the actual trainer dashboard with trainer context
+  location.href = `trainer-dashboard.html?viewAs=${trainerId}`;
 }
 
 // Manage trainer (go to user management)

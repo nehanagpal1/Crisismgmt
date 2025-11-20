@@ -2,6 +2,12 @@ let currentUserId = null;
 let allUsers = [];
 let teamMemberCount = 0;
 
+// Check if admin is viewing as a trainer
+function getViewingTrainerId() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('viewAs');
+}
+
 async function ensureTrainer() {
   const res = await fetch('/check-session');
   const data = await res.json();
@@ -78,9 +84,21 @@ function removeTeamMember(row) {
   updateTeamCountMsg();
 }
 
-async function loadScenarios() { const res = await fetch('/api/trainer/scenarios'); return await res.json(); }
+async function loadScenarios() { 
+  const viewingTrainerId = getViewingTrainerId();
+  let url = '/api/trainer/scenarios';
+  if (viewingTrainerId) url = `/api/admin/trainer/${viewingTrainerId}/scenarios`;
+  const res = await fetch(url); 
+  return await res.json(); 
+}
 async function loadUsers() { const res = await fetch('/api/trainer/users'); return await res.json(); }
-async function loadSessions() { const res = await fetch('/api/trainer/sessions'); return await res.json(); }
+async function loadSessions() { 
+  const viewingTrainerId = getViewingTrainerId();
+  let url = '/api/trainer/sessions';
+  if (viewingTrainerId) url = `/api/admin/trainer/${viewingTrainerId}/sessions`;
+  const res = await fetch(url); 
+  return await res.json(); 
+}
 
 function fillSelect(select, items) {
   select.innerHTML = '';
