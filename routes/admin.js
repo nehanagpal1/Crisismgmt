@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
 
 // Middleware to check if user is admin
 function isAdmin(req, res, next) {
@@ -42,14 +41,11 @@ router.post('/users', isAdmin, async (req, res) => {
       return res.status(400).json({ message: 'Username already exists' });
     }
     
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    
-    // Create user
+    // Create user (password will be hashed by User model pre-save hook)
     const newUser = new User({
       username,
       email: email || '',
-      password: hashedPassword,
+      password: password,
       role: role || 'user'
     });
     
@@ -92,7 +88,8 @@ router.put('/users/:id', isAdmin, async (req, res) => {
       user.role = role;
     }
     if (password) {
-      user.password = await bcrypt.hash(password, 10);
+      // Password will be hashed by User model pre-save hook
+      user.password = password;
     }
     
     await user.save();
