@@ -4,33 +4,459 @@
   <meta charset="UTF-8">
   <title>Trainer Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #0f1419;
+      color: #e2e8f0;
+    }
+    
+    .dashboard-container {
+      background: #0f1419;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 40px;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .app-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    .header-title h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+      text-align: left;
+    }
+    
+    .header-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin: 2px 0 0 0;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .user-info {
+      text-align: right;
+    }
+    
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin: 0;
+    }
+    
+    .user-role {
+      font-size: 12px;
+      color: #64748b;
+      margin: 2px 0 0 0;
+    }
+    
+    .logout-btn {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 8px 16px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .logout-btn:hover {
+      background: #1e293b;
+      border-color: #475569;
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .stat-card {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 20px 24px;
+      transition: all 0.3s;
+    }
+    
+    .stat-card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0;
+    }
+    
+    .stat-value.blue { color: #3b82f6; }
+    .stat-value.orange { color: #f59e0b; }
+    .stat-value.gray { color: #94a3b8; }
+    
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 40px 0 20px 0;
+    }
+    
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+    }
+    
+    /* Active Sessions */
+    .session-card-modern {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      transition: all 0.3s;
+    }
+    
+    .session-card-modern:hover {
+      border-color: #3b82f6;
+      transform: translateY(-1px);
+    }
+    
+    .session-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    
+    .session-info h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0 0 6px 0;
+    }
+    
+    .session-meta {
+      font-size: 13px;
+      color: #64748b;
+      margin: 4px 0;
+    }
+    
+    .session-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .badge-live {
+      background: #f59e0b;
+      color: #000000;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .badge-live::before {
+      content: '▶';
+      font-size: 10px;
+    }
+    
+    .participants-info {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 12px;
+    }
+    
+    .btn-monitor {
+      background: #3b82f6;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-monitor:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+    
+    /* Scenarios */
+    .scenario-card-modern {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      transition: all 0.3s;
+    }
+    
+    .scenario-card-modern:hover {
+      border-color: #475569;
+    }
+    
+    .scenario-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    
+    .scenario-info h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0 0 8px 0;
+      cursor: pointer;
+    }
+    
+    .scenario-info h3:hover {
+      color: #3b82f6;
+    }
+    
+    .scenario-description {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+    
+    .scenario-details {
+      font-size: 12px;
+      color: #64748b;
+    }
+    
+    .scenario-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-small {
+      padding: 6px 14px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+    
+    .btn-view {
+      background: transparent;
+      border: 1px solid #475569;
+      color: #e2e8f0;
+    }
+    
+    .btn-view:hover {
+      background: #334155;
+      border-color: #64748b;
+    }
+    
+    .btn-start {
+      background: #3b82f6;
+      color: #ffffff;
+      border: none;
+    }
+    
+    .btn-start:hover {
+      background: #2563eb;
+    }
+    
+    .btn-delete-small {
+      background: #dc2626;
+      color: #ffffff;
+      border: none;
+    }
+    
+    .btn-delete-small:hover {
+      background: #b91c1c;
+    }
+    
+    .btn-create {
+      background: #3b82f6;
+      color: #ffffff;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    
+    .btn-create:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+    }
+    
+    .badge-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-right: 8px;
+    }
+    
+    .badge-draft {
+      background: #334155;
+      color: #94a3b8;
+    }
+    
+    .badge-active {
+      background: #065f46;
+      color: #6ee7b7;
+    }
+    
+    .badge-archived {
+      background: #1e293b;
+      color: #64748b;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+    
+    .empty-state-icon {
+      font-size: 48px;
+      opacity: 0.3;
+      margin-bottom: 16px;
+    }
+    
+    .empty-state-text {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Trainer Dashboard</h1>
-
-    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:-40px;align-items:center;">
-      <button onclick="location.href='trainer-sessions.html'" class="btn-secondary" style="max-width:220px">View Sessions</button>
-      <button id="createScenarioBtn" class="btn-success" style="max-width:220px">+ Create Scenario</button>
+  <div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+      <div class="header-left">
+        <div class="app-icon">📊</div>
+        <div class="header-title">
+          <h1>Crisis Response Training</h1>
+          <p class="header-subtitle">Trainer Dashboard</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="user-info">
+          <p class="user-name" id="userName">Loading...</p>
+          <p class="user-role">Trainer</p>
+        </div>
+        <form id="logoutForm" style="margin:0;">
+          <button type="submit" class="logout-btn">
+            <span>↪</span> Logout
+          </button>
+        </form>
+      </div>
     </div>
 
-    <div style="margin-top:18px;display:flex;gap:8px;">
-      <button class="tabBtn" data-filter="">All</button>
-      <button class="tabBtn" data-filter="draft">Draft</button>
-      <button class="tabBtn" data-filter="active">Active</button>
-      <button class="tabBtn" data-filter="archived">Archived</button>
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Scenarios</div>
+        <div class="stat-value" id="totalScenarios">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Scenarios</div>
+        <div class="stat-value blue" id="activeScenarios">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Sessions</div>
+        <div class="stat-value orange" id="activeSessions">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Draft Scenarios</div>
+        <div class="stat-value gray" id="draftScenarios">0</div>
+      </div>
     </div>
 
-    <div id="scenarioList" style="margin-top:18px;"></div>
-    <div id="emptyState" style="text-align:center;color:#666;margin:40px 0;display:none;">
-      <div style="font-size:80px;opacity:0.4">🗃️</div>
-      <div>No scenarios found</div>
-      <a href="#" id="createFirstLink">Create your first scenario</a>
+    <!-- Active Sessions -->
+    <div class="section-header">
+      <h2 class="section-title">Active Sessions</h2>
+      <button onclick="location.href='trainer-sessions.html'" class="btn-create">
+        View All Sessions
+      </button>
+    </div>
+    <div id="activeSessionsList">
+      <div class="empty-state">
+        <div class="empty-state-icon">💤</div>
+        <div class="empty-state-text">No active sessions running</div>
+      </div>
     </div>
 
-    <form id="logoutForm" style="margin-top:24px;"><button type="submit">Logout</button></form>
+    <!-- Scenarios -->
+    <div class="section-header">
+      <h2 class="section-title">Scenarios</h2>
+      <button id="createScenarioBtn" class="btn-create">
+        <span>+</span> Create Scenario
+      </button>
+    </div>
+    <div id="scenarioList">
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-text">No scenarios created yet</div>
+      </div>
+    </div>
   </div>
 
-  <script src="trainer.js"></script>
+  <script src="trainer-dashboard.js"></script>
 </body>
 </html>
