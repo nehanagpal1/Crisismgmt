@@ -1,20 +1,619 @@
-body {font-family: Arial, sans-serif;background: #eaeaea;margin: 0;}
-.login-container {background: #fff;max-width: 440px;margin: 50px auto 0 auto;padding: 22px 30px;border-radius: 8px;box-shadow: 0 2px 16px rgba(0,0,0,0.08);} 
-.container {background: #fff;width: 100%;min-height: 100vh;margin: 0;padding: 24px 30px;border-radius: 0;box-shadow: none;box-sizing: border-box;}
+/* ===========================
+   PROFESSIONAL UI REDESIGN
+   Color Palette:
+   - Primary: #1e3a8a (Navy Blue)
+   - Secondary: #475569 (Slate Gray)
+   - Accent: #0ea5e9 (Sky Blue)
+   - Success: #059669 (Emerald)
+   - Warning: #d97706 (Amber)
+   - Danger: #dc2626 (Red)
+   - Background: #f8fafc (Light Gray)
+   - Text: #1e293b (Dark Slate)
+   =========================== */
 
-h2,h1 {color: #ba1b1b;text-align:center;}
-#roundInfo {font-size: 1.05em;margin: 10px 0;}
-#timer {font-size: 1.11em;color: #1b3cba; margin-bottom: 14px;}
-.scenario-block {background: #fdecea;border-left: 5px solid #ba1b1b;margin-bottom: 16px;padding: 14px;border-radius: 5px;}
-textarea,input[type="text"],input[type="password"],input[type="email"],select {width: 94%;margin-bottom:8px;font-size: 1.1em;padding: 9px 10px;border-radius:4px;border: 1px solid #bbb;box-sizing:border-box;}
-button {display: inline-block;padding: 10px 16px;font-size: 1.08em;background: #ba1b1b;color: #fff;border: none; border-radius: 4px;cursor: pointer;margin-top:10px;}
-button:disabled {background:#aaa;}
-#feedback, #loginMessage, #regMessage {margin: 10px 0 0 0; color: #337011;min-height:24px;}
-.role-badge {display: inline-block;padding:6px 12px;border-radius: 12px;font-weight: bold;font-size: 0.97em;margin-left:8px}
-.admin-badge {background: #ffc107; color:#222;}
-.trainer-badge {background: #076bfa; color: #fff;}
-.user-badge {background: #17a2b8; color:white;}
-a { color: #007bff; text-decoration: none; }
-a:hover { text-decoration: underline; }
-#summaryRounds .scenario {font-weight:bold;}
-#summaryRounds .response {margin-bottom: 7px;}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f8fafc;
+  margin: 0;
+  color: #1e293b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ===========================
+   CONTAINERS
+   =========================== */
+
+.login-container {
+  background: #ffffff;
+  max-width: 420px;
+  margin: 60px auto 0 auto;
+  padding: 32px 36px;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(30, 58, 138, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+.container {
+  background: #ffffff;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 24px 40px;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* ===========================
+   TYPOGRAPHY
+   =========================== */
+
+h1 {
+  color: #1e3a8a;
+  text-align: center;
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0 0 24px 0;
+  letter-spacing: -0.5px;
+}
+
+h2 {
+  color: #1e3a8a;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  letter-spacing: -0.3px;
+}
+
+h3 {
+  color: #475569;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 20px 0 12px 0;
+}
+
+p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 8px 0;
+}
+
+/* ===========================
+   GAME INTERFACE
+   =========================== */
+
+#roundInfo {
+  font-size: 13px;
+  margin: 12px 0 8px 0;
+  color: #475569;
+  font-weight: 500;
+}
+
+#timer {
+  font-size: 14px;
+  color: #0ea5e9;
+  margin-bottom: 16px;
+  font-weight: 600;
+  padding: 8px 12px;
+  background: #f0f9ff;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.scenario-block {
+  background: #f8fafc;
+  border-left: 4px solid #1e3a8a;
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+#scenarioText {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #334155;
+}
+
+/* ===========================
+   FORM ELEMENTS
+   =========================== */
+
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+select {
+  width: 100%;
+  margin-bottom: 12px;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.6;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+  display: block;
+  margin-bottom: 6px;
+}
+
+/* ===========================
+   BUTTONS
+   =========================== */
+
+button {
+  display: inline-block;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  background: #1e3a8a;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s, transform 0.1s;
+  font-family: inherit;
+}
+
+button:hover {
+  background: #1e40af;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Button Variants */
+button.btn-primary {
+  background: #1e3a8a;
+}
+
+button.btn-primary:hover {
+  background: #1e40af;
+}
+
+button.btn-success {
+  background: #059669;
+}
+
+button.btn-success:hover {
+  background: #047857;
+}
+
+button.btn-danger {
+  background: #dc2626;
+}
+
+button.btn-danger:hover {
+  background: #b91c1c;
+}
+
+button.btn-secondary {
+  background: #475569;
+}
+
+button.btn-secondary:hover {
+  background: #334155;
+}
+
+button.btn-info {
+  background: #0ea5e9;
+}
+
+button.btn-info:hover {
+  background: #0284c7;
+}
+
+button.btn-warning {
+  background: #d97706;
+}
+
+button.btn-warning:hover {
+  background: #b45309;
+}
+
+/* ===========================
+   FEEDBACK MESSAGES
+   =========================== */
+
+#feedback,
+#loginMessage,
+#regMessage {
+  margin: 12px 0 0 0;
+  color: #059669;
+  min-height: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#waitingMsg {
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  padding: 12px 14px;
+  border-radius: 6px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #92400e;
+}
+
+#autoSubmitMsg {
+  color: #dc2626;
+  font-weight: 600;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+/* ===========================
+   BADGES & STATUS
+   =========================== */
+
+.role-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 11px;
+  margin-left: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-badge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.trainer-badge {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.user-badge {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* Session Status Badges */
+.session-status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-completed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-submitted {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.status-analysing {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-archived {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ===========================
+   LINKS
+   =========================== */
+
+a {
+  color: #0ea5e9;
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #0284c7;
+  text-decoration: underline;
+}
+
+/* ===========================
+   TABLES
+   =========================== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  font-size: 13px;
+}
+
+table thead {
+  background: #f1f5f9;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+table th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #475569;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+table td {
+  padding: 12px 12px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* ===========================
+   CARDS
+   =========================== */
+
+.session-card,
+.card {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  background: #ffffff;
+  transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+.session-card:hover,
+.card:hover {
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.08);
+  border-color: #cbd5e1;
+}
+
+.session-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e3a8a;
+  margin-bottom: 10px;
+}
+
+.team-info {
+  font-size: 13px;
+  color: #059669;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.start-btn {
+  background: #059669;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.start-btn:hover {
+  background: #047857;
+  transform: translateY(-1px);
+}
+
+.start-btn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.no-sessions {
+  text-align: center;
+  padding: 40px 20px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* ===========================
+   TABS
+   =========================== */
+
+.tabBtn {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-right: 6px;
+  margin-top: 0;
+}
+
+.tabBtn:hover {
+  background: #e2e8f0;
+  transform: none;
+}
+
+.tabBtn.active {
+  background: #1e3a8a;
+  color: #ffffff;
+  border-color: #1e3a8a;
+}
+
+/* ===========================
+   SUMMARY & ROUNDS
+   =========================== */
+
+#summaryRounds .scenario {
+  font-weight: 600;
+  color: #1e3a8a;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+#summaryRounds .response {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #475569;
+  padding-left: 12px;
+  border-left: 3px solid #e2e8f0;
+}
+
+/* ===========================
+   CUSTOM ROLE DISPLAY
+   =========================== */
+
+#customRole {
+  font-size: 14px;
+  font-weight: 600;
+  color: #059669;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: #d1fae5;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* ===========================
+   EMPTY STATE
+   =========================== */
+
+#emptyState {
+  text-align: center;
+  color: #64748b;
+  margin: 40px 0;
+  font-size: 14px;
+}
+
+#emptyState div:first-child {
+  font-size: 60px;
+  opacity: 0.3;
+  margin-bottom: 12px;
+}
+
+/* ===========================
+   RESPONSIVE
+   =========================== */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px 20px;
+  }
+
+  .login-container {
+    margin: 30px 16px;
+    padding: 24px 20px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  table th,
+  table td {
+    padding: 8px 6px;
+  }
+}
+
+/* ===========================
+   UTILITY CLASSES
+   =========================== */
+
+.text-center {
+  text-align: center;
+}
+
+.mt-1 {
+  margin-top: 8px;
+}
+
+.mt-2 {
+  margin-top: 16px;
+}
+
+.mb-1 {
+  margin-bottom: 8px;
+}
+
+.mb-2 {
+  margin-bottom: 16px;
+}
+
+.flex {
+  display: flex;
+}
+
+.gap-1 {
+  gap: 8px;
+}
+
+.gap-2 {
+  gap: 16px;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}

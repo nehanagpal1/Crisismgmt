@@ -7,10 +7,10 @@ ensureTrainer().then(async ()=>{
   body.innerHTML = '';
   rows.forEach(s=>{
     const tr=document.createElement('tr');
-    tr.innerHTML = `<td>${s.scenarioId?.title||''}</td><td>${s.userId?.username||''}</td><td>${s.status}</td>
+    tr.innerHTML = `<td>${s.scenarioId?.title||''}</td><td>${s.userId?.username||''}</td><td><span class="session-status status-${s.status}">${s.status}</span></td>
       <td>
-        <button data-act="view" data-id="${s._id}" style="width:auto;background:#555">Response and Analysis</button>
-        <button data-act="delete" data-id="${s._id}" style="width:auto;background:#dc3545;color:white;">Delete</button>
+        <button data-act="view" data-id="${s._id}" class="btn-info" style="width:auto;font-size:12px;padding:8px 14px;">Response and Analysis</button>
+        <button data-act="delete" data-id="${s._id}" class="btn-danger" style="width:auto;font-size:12px;padding:8px 14px;">Delete</button>
       </td>`;
     body.appendChild(tr);
   });

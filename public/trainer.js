@@ -26,18 +26,19 @@ function renderScenarios(list) {
 
   list.forEach(s => {
     const card = document.createElement('div');
-    card.style.border = '1px solid #ddd'; card.style.borderRadius = '6px'; card.style.padding = '12px'; card.style.marginBottom = '10px';
+    card.className = 'card';
+    card.style.marginBottom = '12px';
     card.innerHTML = `
       <div style=\"display:flex;justify-content:space-between;align-items:center;\">
         <div>
-          <div style=\"font-weight:bold;font-size:16px;cursor:pointer;color:#1d5fff;\" data-edit=\"${s._id}\">${s.title}</div>
-          <div style=\"font-size:13px;color:#666;\">${s.description || ''}</div>
-          <div style=\"margin-top:6px;font-size:12px;\">Status: <strong>${s.status}</strong> • Template: ${s.templateType || 'custom'} • Rounds: ${s.numRounds || 5} • Timer: ${s.responseTimerSec || 120}s</div>
+          <div style=\"font-weight:600;font-size:15px;cursor:pointer;color:#1e3a8a;\" data-edit=\"${s._id}\">${s.title}</div>
+          <div style=\"font-size:13px;color:#64748b;margin-top:4px;\">${s.description || ''}</div>
+          <div style=\"margin-top:8px;font-size:12px;color:#475569;\">Status: <strong>${s.status}</strong> • Template: ${s.templateType || 'custom'} • Rounds: ${s.numRounds || 5} • Timer: ${s.responseTimerSec || 120}s</div>
         </div>
-        <div style=\"display:flex;gap:8px;\">
-          ${s.status !== 'active' ? `<button data-act=\"status\" data-status=\"active\" data-id=\"${s._id}\" style=\"width:auto\">Activate</button>` : ''}
-          ${s.status !== 'archived' ? `<button data-act=\"status\" data-status=\"archived\" data-id=\"${s._id}\" style=\"width:auto;background:#555\">Archive</button>` : ''}
-          <button data-act=\"delete\" data-id=\"${s._id}\" style=\"width:auto;background:#dc3545;color:white;\">Delete</button>
+        <div style=\"display:flex;gap:8px;flex-wrap:wrap;\">
+          ${s.status !== 'active' ? `<button data-act=\"status\" data-status=\"active\" data-id=\"${s._id}\" class=\"btn-success\" style=\"width:auto;font-size:12px;padding:8px 14px;\">Activate</button>` : ''}
+          ${s.status !== 'archived' ? `<button data-act=\"status\" data-status=\"archived\" data-id=\"${s._id}\" class=\"btn-secondary\" style=\"width:auto;font-size:12px;padding:8px 14px;\">Archive</button>` : ''}
+          <button data-act=\"delete\" data-id=\"${s._id}\" class=\"btn-danger\" style=\"width:auto;font-size:12px;padding:8px 14px;\">Delete</button>
         </div>
       </div>`;
     holder.appendChild(card);

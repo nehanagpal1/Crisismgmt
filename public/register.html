@@ -12,11 +12,12 @@
       <input type="text" name="username" placeholder="Username" required><br>
       <input type="email" name="email" placeholder="Email (optional)"><br>
       <input type="password" name="password" placeholder="Password" required><br>
-      <select name="role" required style="width:94%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:4px;">
+      <label>Role</label>
+      <select name="role" required>
         <option value="user">User</option>
         <option value="trainer">Trainer</option>
         <option value="admin">Admin</option>
-      </select><br>
+      </select>
       <button type="submit">Register</button>
     </form>
     <div id="regMessage"></div>
