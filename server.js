@@ -14,6 +14,7 @@ const authRoutes = require('./routes/auth');
 const scenarioRoutes = require('./routes/scenario');
 const trainerRoutes = require('./routes/trainer');
 const userRoutes = require('./routes/user');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -60,6 +61,7 @@ app.use(authRoutes);
 app.use(scenarioRoutes);
 app.use(trainerRoutes);
 app.use(userRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Default: redirect based on role if logged in
 app.get('/', (req, res) => {

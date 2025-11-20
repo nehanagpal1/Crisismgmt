@@ -181,6 +181,22 @@ ensureTrainer().then(async (user) => {
   // Set user name
   document.getElementById('userName').textContent = user.username || 'Trainer';
   
+  // Show admin link if user is admin
+  if (user.role === 'admin') {
+    const headerActions = document.querySelector('.header-right');
+    const adminLink = document.createElement('a');
+    adminLink.href = 'admin-users.html';
+    adminLink.style.cssText = 'color:#f59e0b;text-decoration:none;font-size:14px;font-weight:600;padding:8px 16px;border:1px solid #f59e0b;border-radius:8px;transition:all 0.2s;';
+    adminLink.innerHTML = '👥 User Management';
+    adminLink.onmouseover = () => {
+      adminLink.style.background = 'rgba(245, 158, 11, 0.1)';
+    };
+    adminLink.onmouseout = () => {
+      adminLink.style.background = 'transparent';
+    };
+    headerActions.insertBefore(adminLink, headerActions.firstChild);
+  }
+  
   // Load data
   const [scenarios, sessions] = await Promise.all([
     loadScenarios(),

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Management</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #0f1419;
+      color: #e2e8f0;
+    }
+    
+    .dashboard-container {
+      background: #0f1419;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 40px 60px;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+      text-align: left;
+    }
+    
+    .section-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin: 4px 0 0 0;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .nav-link {
+      color: #3b82f6;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 16px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .nav-link:hover {
+      background: #1e293b;
+      border-color: #3b82f6;
+      color: #60a5fa;
+    }
+    
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .stat-card {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 20px 24px;
+      transition: all 0.3s;
+    }
+    
+    .stat-card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-2px);
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0;
+    }
+    
+    .stat-value.blue { color: #3b82f6; }
+    .stat-value.green { color: #10b981; }
+    .stat-value.orange { color: #f59e0b; }
+    
+    /* Create User Section */
+    .section-card {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      padding: 28px 32px;
+      border-radius: 12px;
+      margin-bottom: 40px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0 0 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+      border-radius: 2px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      background: #0f1419;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    input::placeholder {
+      color: #64748b;
+    }
+    
+    select {
+      cursor: pointer;
+    }
+    
+    select option {
+      background: #1a1f2e;
+      color: #e2e8f0;
+    }
+    
+    .btn-create {
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-create:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    #createFeedback {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+    }
+    
+    #createFeedback.success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid #10b981;
+      color: #10b981;
+      display: block;
+    }
+    
+    #createFeedback.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      display: block;
+    }
+    
+    /* Users Table */
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .table-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+    }
+    
+    .search-box {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    #searchInput {
+      width: 300px;
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+    
+    .filter-select {
+      padding: 10px 16px;
+      font-size: 13px;
+      width: 150px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    table thead {
+      background: #0f1419;
+    }
+    
+    table th {
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #2d3748;
+    }
+    
+    table td {
+      padding: 18px 20px;
+      color: #e2e8f0;
+      font-size: 14px;
+      border-bottom: 1px solid #2d3748;
+      vertical-align: middle;
+    }
+    
+    table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    table tbody tr {
+      transition: all 0.2s;
+    }
+    
+    table tbody tr:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .role-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .role-admin {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+    
+    .role-trainer {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+    }
+    
+    .role-user {
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn-edit,
+    .btn-delete {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    
+    .btn-edit {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    .btn-edit:hover {
+      background: #2563eb;
+    }
+    
+    .btn-delete {
+      background: #dc2626;
+      color: white;
+    }
+    
+    .btn-delete:hover {
+      background: #b91c1c;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+    
+    .empty-icon {
+      font-size: 48px;
+      opacity: 0.3;
+      margin-bottom: 16px;
+    }
+    
+    .empty-text {
+      font-size: 15px;
+      color: #94a3b8;
+    }
+    
+    /* Edit Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+    }
+    
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    
+    .modal-close:hover {
+      background: #334155;
+      color: #e2e8f0;
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    
+    .btn-save {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1;
+    }
+    
+    .btn-save:hover {
+      background: #2563eb;
+    }
+    
+    .btn-cancel {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-cancel:hover {
+      background: #1e293b;
+      border-color: #475569;
+    }
+    
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .search-box {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      #searchInput,
+      .filter-select {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Header -->
+    <div class="page-header">
+      <div>
+        <h1>User Management</h1>
+        <p class="section-subtitle">Manage users, roles, and permissions</p>
+      </div>
+      <div class="header-actions">
+        <a href="trainer-dashboard.html" class="nav-link">
+          <span>←</span> Back to Dashboard
+        </a>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Users</div>
+        <div class="stat-value" id="totalUsers">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Admins</div>
+        <div class="stat-value orange" id="adminCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Trainers</div>
+        <div class="stat-value blue" id="trainerCount">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Users</div>
+        <div class="stat-value green" id="userCount">0</div>
+      </div>
+    </div>
+
+    <!-- Create User Section -->
+    <div class="section-card">
+      <h2 class="section-title">Create New User</h2>
+      
+      <form id="createUserForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Username *</label>
+            <input type="text" id="newUsername" name="username" placeholder="Enter username" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="newEmail" name="email" placeholder="user@example.com">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Password *</label>
+            <input type="password" id="newPassword" name="password" placeholder="Enter password" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Role *</label>
+            <select id="newRole" name="role" required>
+              <option value="user">User (Participant)</option>
+              <option value="trainer">Trainer</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn-create">
+          <span>+</span> Create User
+        </button>
+        
+        <div id="createFeedback"></div>
+      </form>
+    </div>
+
+    <!-- Users List -->
+    <div class="table-header">
+      <h2 class="table-title">All Users</h2>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Search users...">
+        <select id="roleFilter" class="filter-select">
+          <option value="">All Roles</option>
+          <option value="admin">Admin</option>
+          <option value="trainer">Trainer</option>
+          <option value="user">User</option>
+        </select>
+      </div>
+    </div>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="usersBody">
+        <tr>
+          <td colspan="5">
+            <div class="empty-state">
+              <div class="empty-icon">👥</div>
+              <div class="empty-text">Loading users...</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit User</h3>
+        <button class="modal-close" onclick="closeEditModal()">×</button>
+      </div>
+      
+      <form id="editUserForm">
+        <input type="hidden" id="editUserId">
+        
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" id="editUsername" disabled style="opacity: 0.6; cursor: not-allowed;">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" id="editEmail">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <select id="editRole">
+            <option value="user">User (Participant)</option>
+            <option value="trainer">Trainer</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">New Password (leave blank to keep current)</label>
+          <input type="password" id="editPassword" placeholder="Enter new password">
+        </div>
+        
+        <div class="modal-actions">
+          <button type="submit" class="btn-save">Save Changes</button>
+          <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="admin-users.js"></script>
+</body>
+</html>
+
