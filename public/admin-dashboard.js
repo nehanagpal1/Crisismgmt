@@ -52,12 +52,9 @@ async function loadSessions() {
 // Calculate stats
 function calculateStats() {
   const trainers = allUsers.filter(u => u.role === 'trainer');
-  const activeSessions = allSessions.filter(s => s.status === 'active');
   
   return {
     totalTrainers: trainers.length,
-    totalScenarios: allScenarios.length,
-    activeSessions: activeSessions.length,
     totalUsers: allUsers.length
   };
 }
@@ -65,8 +62,6 @@ function calculateStats() {
 // Update stats display
 function updateStats(stats) {
   document.getElementById('totalTrainers').textContent = stats.totalTrainers;
-  document.getElementById('totalScenarios').textContent = stats.totalScenarios;
-  document.getElementById('activeSessions').textContent = stats.activeSessions;
   document.getElementById('totalUsers').textContent = stats.totalUsers;
 }
 
@@ -152,12 +147,13 @@ function renderTrainers(trainers) {
 
 // View trainer dashboard
 function viewTrainerDashboard(trainerId, trainerName) {
-  // Store trainer info in session storage for the dashboard to use
+  // Store trainer info and admin flag in session storage
   sessionStorage.setItem('viewingTrainerId', trainerId);
   sessionStorage.setItem('viewingTrainerName', trainerName);
+  sessionStorage.setItem('viewingAsAdmin', 'true');
   
-  // Navigate to trainer dashboard
-  location.href = 'trainer-dashboard.html';
+  // Navigate to trainer-specific dashboard
+  location.href = `trainer-view.html?trainerId=${trainerId}`;
 }
 
 // Manage trainer (go to user management)

@@ -134,5 +134,37 @@ router.delete('/users/:id', isAdmin, async (req, res) => {
   }
 });
 
+// GET trainer's scenarios
+router.get('/trainer/:trainerId/scenarios', isAdmin, async (req, res) => {
+  try {
+    const { trainerId } = req.params;
+    const Scenario = require('../models/Scenario');
+    
+    const scenarios = await Scenario.find({ trainerId }).sort({ createdAt: -1 });
+    res.json(scenarios);
+  } catch (err) {
+    console.error('Error fetching trainer scenarios:', err);
+    res.status(500).json({ error: 'Failed to fetch scenarios' });
+  }
+});
+
+// GET trainer's sessions
+router.get('/trainer/:trainerId/sessions', isAdmin, async (req, res) => {
+  try {
+    const { trainerId } = req.params;
+    const PlaySession = require('../models/Session');
+    
+    const sessions = await PlaySession.find({ trainerId })
+      .populate('scenarioId', 'title numRounds')
+      .populate('teamMembers.userId', 'username')
+      .sort({ createdAt: -1 });
+    
+    res.json(sessions);
+  } catch (err) {
+    console.error('Error fetching trainer sessions:', err);
+    res.status(500).json({ error: 'Failed to fetch sessions' });
+  }
+});
+
 module.exports = router;
 

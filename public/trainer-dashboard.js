@@ -181,12 +181,27 @@ ensureTrainer().then(async (user) => {
   // Set user name
   document.getElementById('userName').textContent = user.username || 'Trainer';
   
-  // Show admin link if user is admin
+  // Show admin links if user is admin
   if (user.role === 'admin') {
     const headerActions = document.querySelector('.header-right');
+    
+    // Add back to admin dashboard link
+    const backLink = document.createElement('a');
+    backLink.href = 'admin-dashboard.html';
+    backLink.style.cssText = 'color:#f59e0b;text-decoration:none;font-size:14px;font-weight:600;padding:8px 16px;border:1px solid #f59e0b;border-radius:8px;transition:all 0.2s;';
+    backLink.innerHTML = '← Admin Dashboard';
+    backLink.onmouseover = () => {
+      backLink.style.background = 'rgba(245, 158, 11, 0.1)';
+    };
+    backLink.onmouseout = () => {
+      backLink.style.background = 'transparent';
+    };
+    headerActions.insertBefore(backLink, headerActions.firstChild);
+    
+    // Add user management link
     const adminLink = document.createElement('a');
     adminLink.href = 'admin-users.html';
-    adminLink.style.cssText = 'color:#f59e0b;text-decoration:none;font-size:14px;font-weight:600;padding:8px 16px;border:1px solid #f59e0b;border-radius:8px;transition:all 0.2s;';
+    adminLink.style.cssText = 'color:#f59e0b;text-decoration:none;font-size:14px;font-weight:600;padding:8px 16px;border:1px solid #f59e0b;border-radius:8px;transition:all 0.2s;margin-left:12px;';
     adminLink.innerHTML = '👥 User Management';
     adminLink.onmouseover = () => {
       adminLink.style.background = 'rgba(245, 158, 11, 0.1)';
