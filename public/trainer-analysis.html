@@ -5,45 +5,233 @@
   <title>Trainer Analysis</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .analysis-section { 
-      border: 1px solid #e2e8f0; 
-      border-radius: 8px; 
-      padding: 18px; 
-      margin-bottom: 18px; 
-      background: #f8fafc; 
+    body {
+      background: #0f1419;
+      color: #e2e8f0;
     }
-    .section-title { 
-      font-size: 15px; 
-      font-weight: 600; 
-      color: #475569;
+    
+    .dashboard-container {
+      background: #0f1419;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 40px;
+      min-height: 100vh;
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0 0 24px 0;
+      text-align: left;
+    }
+    
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 32px 0 16px 0;
+      text-align: left;
+    }
+    
+    #sessionInfo {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid #3b82f6;
+      padding: 20px 24px;
+      border-radius: 12px;
+      margin-bottom: 32px;
+    }
+    
+    #sessionInfo h3 {
+      margin: 0 0 12px 0;
+      color: #60a5fa;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    
+    #sessionDetails {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.7;
+    }
+    
+    #responsesSection {
+      margin-bottom: 32px;
+    }
+    
+    .round-block {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    
+    .round-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #3b82f6;
+      margin: 0 0 12px 0;
+    }
+    
+    .scenario-text {
+      font-size: 14px;
+      color: #94a3b8;
+      margin-bottom: 16px;
+      padding: 12px;
+      background: #0f1419;
+      border-radius: 8px;
+      border-left: 3px solid #3b82f6;
+    }
+    
+    .response-item {
       margin-bottom: 12px;
+      padding: 12px;
+      background: #0f1419;
+      border-radius: 8px;
+      border-left: 3px solid #64748b;
     }
-    .field-label { 
-      font-weight: 600; 
-      margin-top: 10px; 
+    
+    .response-user {
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .response-text {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+    
+    .analysis-section {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+    
+    .field-label {
+      font-weight: 600;
+      margin-top: 16px;
+      margin-bottom: 8px;
       display: block;
       font-size: 13px;
-      color: #475569;
+      color: #94a3b8;
     }
-    .form-row { 
-      margin-bottom: 12px; 
+    
+    .form-row {
+      margin-bottom: 16px;
     }
+    
+    .form-row:first-child .field-label {
+      margin-top: 0;
+    }
+    
+    textarea {
+      width: 100%;
+      background: #0f1419;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      min-height: 80px;
+      resize: vertical;
+      font-family: inherit;
+      line-height: 1.6;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+    
+    textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
     .analysis-section textarea {
-      min-height: 60px;
+      min-height: 100px;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    
+    .btn-success {
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-secondary:hover {
+      background: #1e293b;
+      border-color: #475569;
+    }
+    
+    #feedbackMsg {
+      margin-top: 16px;
+      color: #10b981;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 12px 16px;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 8px;
+      display: none;
+    }
+    
+    #feedbackMsg.show {
+      display: block;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="dashboard-container">
     <h1>Trainer Analysis Form</h1>
     
-    <div id="sessionInfo" style="background:#dbeafe;border:1px solid #0ea5e9;padding:16px;border-radius:8px;margin-bottom:20px;">
-      <h3 style="margin:0 0 10px 0;color:#1e40af;font-size:15px;">Session Information</h3>
-      <div id="sessionDetails" style="font-size:13px;color:#334155;"></div>
+    <div id="sessionInfo">
+      <h3>Session Information</h3>
+      <div id="sessionDetails"></div>
     </div>
     
     <h2>Team Responses by Round</h2>
-    <div id="responsesSection" style="margin-bottom:24px;">
+    <div id="responsesSection">
       <!-- Responses will be displayed grouped by round with team member names -->
     </div>
     
@@ -53,32 +241,37 @@
         <div class="section-title">1. Behavioural Interpretation</div>
         <div class="form-row">
           <label class="field-label">Emotional Tone</label>
-          <textarea id="emotionalTone" name="emotionalTone"></textarea>
+          <textarea id="emotionalTone" name="emotionalTone" placeholder="Describe the emotional tone observed in the team's responses..."></textarea>
         </div>
         <div class="form-row">
           <label class="field-label">Cognitive State</label>
-          <textarea id="cognitiveState" name="cognitiveState"></textarea>
+          <textarea id="cognitiveState" name="cognitiveState" placeholder="Assess the cognitive state and decision-making process..."></textarea>
         </div>
         <div class="form-row">
           <label class="field-label">Behavioural Signals</label>
-          <textarea id="behaviouralSignals" name="behaviouralSignals"></textarea>
+          <textarea id="behaviouralSignals" name="behaviouralSignals" placeholder="Note any behavioural signals or patterns observed..."></textarea>
         </div>
       </div>
+      
       <div class="analysis-section">
         <div class="section-title">2. What could have been better</div>
-        <textarea id="whatCouldBeBetter" name="whatCouldBeBetter"></textarea>
+        <textarea id="whatCouldBeBetter" name="whatCouldBeBetter" placeholder="Identify areas for improvement and alternative approaches..."></textarea>
       </div>
+      
       <div class="analysis-section">
         <div class="section-title">3. How each team performed</div>
-        <textarea id="teamPerformance" name="teamPerformance"></textarea>
+        <textarea id="teamPerformance" name="teamPerformance" placeholder="Evaluate overall team performance and individual contributions..."></textarea>
       </div>
-      <div style="display:flex;gap:12px;">
+      
+      <div class="form-actions">
         <button type="button" id="completeBtn" class="btn-success">Submit Analysis & Mark Complete</button>
         <button type="button" id="backBtn" class="btn-secondary">Back</button>
       </div>
-      <div id="feedbackMsg" style="margin-top:18px; color:#059669;font-weight:600;font-size:13px;"></div>
+      
+      <div id="feedbackMsg"></div>
     </form>
   </div>
+  
   <script src="trainer-analysis.js"></script>
 </body>
 </html>

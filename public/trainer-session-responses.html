@@ -2,26 +2,163 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Session Responses</title>
+  <title>Response and Analysis</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #0f1419;
+      color: #e2e8f0;
+    }
+    
+    .dashboard-container {
+      background: #0f1419;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 40px;
+      min-height: 100vh;
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0 0 24px 0;
+      text-align: left;
+    }
+    
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 32px 0 16px 0;
+      text-align: left;
+    }
+    
+    .back-link {
+      display: inline-block;
+      color: #3b82f6;
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 24px;
+      transition: color 0.2s;
+    }
+    
+    .back-link:hover {
+      color: #60a5fa;
+    }
+    
+    #info {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    table thead {
+      background: #0f1419;
+    }
+    
+    table th {
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #2d3748;
+    }
+    
+    table td {
+      padding: 16px 16px;
+      color: #e2e8f0;
+      font-size: 13px;
+      border-bottom: 1px solid #2d3748;
+      vertical-align: top;
+    }
+    
+    table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    table tbody tr:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
+    #analysisSection {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      padding: 20px 24px;
+      border-radius: 12px;
+      margin-top: 16px;
+    }
+    
+    #analysisSection h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #3b82f6;
+      margin: 0 0 12px 0;
+    }
+    
+    #analysisSection p {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.7;
+      margin: 8px 0;
+    }
+    
+    #analysisSection strong {
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    
+    .analysis-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #64748b;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
+  <div class="dashboard-container">
+    <a href="trainer-sessions.html" class="back-link">← Back to Sessions</a>
+    
     <h1>Response and Analysis</h1>
-    <div style="margin-bottom:12px;"><a href="trainer-sessions.html">← Back to Sessions</a></div>
+    
     <div id="info"></div>
     
     <h2>User Responses</h2>
-    <table style="width:100%;border-collapse:collapse;margin-top:12px;">
-      <thead><tr style="border-bottom:1px solid #888"><th>Round</th><th>Scenario</th><th>Response</th></tr></thead>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:80px;">Round</th>
+          <th style="width:35%;">Scenario</th>
+          <th>Response</th>
+        </tr>
+      </thead>
       <tbody id="respBody"></tbody>
     </table>
     
-    <h2 style="margin-top:30px;">Trainer Analysis</h2>
-    <div id="analysisSection" style="margin-top:12px;"></div>
+    <h2>Trainer Analysis</h2>
+    <div id="analysisSection">
+      <div class="analysis-empty">No analysis submitted yet</div>
+    </div>
   </div>
+  
   <script src="trainer-session-responses.js"></script>
 </body>
 </html>
-
-

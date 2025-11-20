@@ -4,45 +4,275 @@
   <meta charset="UTF-8">
   <title>Trainer Sessions</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #0f1419;
+      color: #e2e8f0;
+    }
+    
+    .dashboard-container {
+      background: #0f1419;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 40px;
+      min-height: 100vh;
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0 0 24px 0;
+      text-align: left;
+    }
+    
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 32px 0 16px 0;
+    }
+    
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .nav-links a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    
+    .nav-links a:hover {
+      color: #60a5fa;
+    }
+    
+    .create-session-card {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 32px;
+    }
+    
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    
+    select {
+      width: 100%;
+      background: #0f1419;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    select option {
+      background: #1a1f2e;
+      color: #e2e8f0;
+    }
+    
+    .team-members-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+    
+    #teamMembersContainer {
+      margin-top: 12px;
+    }
+    
+    .team-member-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    
+    .team-member-row select,
+    .team-member-row input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+    
+    .team-member-row input {
+      background: #0f1419;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    
+    .team-member-row input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .team-member-row button {
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+    
+    #teamCountMsg {
+      margin-left: 12px;
+      color: #64748b;
+      font-size: 13px;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    
+    .btn-success {
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: auto;
+    }
+    
+    .btn-success:hover {
+      background: #059669;
+      transform: translateY(-1px);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: auto;
+    }
+    
+    .btn-secondary:hover {
+      background: #1e293b;
+      border-color: #475569;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    table thead {
+      background: #0f1419;
+    }
+    
+    table th {
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #2d3748;
+    }
+    
+    table td {
+      padding: 16px 16px;
+      color: #e2e8f0;
+      font-size: 13px;
+      border-bottom: 1px solid #2d3748;
+    }
+    
+    table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    table tbody tr:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
+    table button {
+      padding: 6px 12px;
+      font-size: 12px;
+      margin-right: 6px;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Sessions</h1>
-    <div style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+  <div class="dashboard-container">
+    <div class="nav-links">
       <a href="trainer-dashboard.html">← Back to Dashboard</a>
       <a href="trainer-sessions-archived.html">View Archived Sessions</a>
     </div>
-
+    
+    <h1>Sessions</h1>
+    
     <h3>Create Team Session</h3>
-    <div style="border:1px solid #ddd;padding:16px;border-radius:8px;background:#fafbff;margin-bottom:20px;">
-      <label style="display:block;margin-bottom:12px;">Scenario
-        <select id="scenarioSelect" style="width:100%;padding:8px;"></select>
-      </label>
+    <div class="create-session-card">
+      <label>Scenario</label>
+      <select id="scenarioSelect"></select>
       
-      <div style="margin-bottom:12px;">
-        <strong>Team Members (1-5 Users):</strong>
-        <div id="teamMembersContainer" style="margin-top:8px;">
+      <div style="margin-bottom:16px;">
+        <div class="team-members-label">Team Members (1-5 Users)</div>
+        <div id="teamMembersContainer">
           <!-- Team member rows will be added dynamically -->
         </div>
-        <button type="button" id="addTeamMemberBtn" class="btn-secondary" style="width:auto;margin-top:8px;">+ Add Team Member</button>
-        <span id="teamCountMsg" style="margin-left:12px;color:#666;"></span>
+        <button type="button" id="addTeamMemberBtn" class="btn-secondary" style="margin-top:8px;">+ Add Team Member</button>
+        <span id="teamCountMsg"></span>
       </div>
       
-      <div style="display:flex;gap:10px;">
-        <button id="createSessionBtn" class="btn-success" style="width:auto;">Create Team Session</button>
-        <button id="refreshBtn" class="btn-secondary" style="width:auto;">Refresh</button>
+      <div class="form-actions">
+        <button id="createSessionBtn" class="btn-success">Create Team Session</button>
+        <button id="refreshBtn" class="btn-secondary">Refresh</button>
       </div>
     </div>
 
-    <h3 style="margin-top:20px;">All Sessions</h3>
-    <table style="width:100%;border-collapse:collapse;margin-top:10px;">
+    <h3>All Sessions</h3>
+    <table>
       <thead>
-        <tr style="border-bottom:1px solid #888"><th>Scenario</th><th>Team Members</th><th>Status</th><th>Actions</th></tr>
+        <tr>
+          <th>Scenario</th>
+          <th>Team Members</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
       </thead>
       <tbody id="sessionsBody"></tbody>
     </table>
-
   </div>
+  
   <script src="trainer-sessions.js"></script>
 </body>
 </html>
