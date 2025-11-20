@@ -5,6 +5,28 @@ ensureTrainer().then(async ()=>{
   const rows = await loadArchived();
   const body = document.getElementById('archBody');
   body.innerHTML = '';
+  
+  // Update archive count
+  const archiveCount = document.getElementById('archiveCount');
+  if (archiveCount) {
+    archiveCount.textContent = `${rows.length} session${rows.length !== 1 ? 's' : ''}`;
+  }
+  
+  if (rows.length === 0) {
+    body.innerHTML = `
+      <tr>
+        <td colspan="4">
+          <div class="empty-state">
+            <div class="empty-icon">📦</div>
+            <div class="empty-text">No archived sessions</div>
+            <div class="empty-subtext">Completed sessions will appear here</div>
+          </div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
   rows.forEach(s=>{
     const tr=document.createElement('tr');
     tr.innerHTML = `<td>${s.scenarioId?.title||''}</td><td>${s.userId?.username||''}</td><td><span class="session-status status-${s.status}">${s.status}</span></td>

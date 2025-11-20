@@ -4,21 +4,208 @@
   <meta charset="UTF-8">
   <title>Archived Sessions</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #0f1419;
+      color: #e2e8f0;
+    }
+    
+    .dashboard-container {
+      background: #0f1419;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 40px 60px;
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+      text-align: left;
+    }
+    
+    .section-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin: 8px 0 0 0;
+    }
+    
+    .back-link {
+      color: #3b82f6;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 16px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .back-link:hover {
+      background: #1e293b;
+      border-color: #3b82f6;
+      color: #60a5fa;
+    }
+    
+    /* Table */
+    .table-section {
+      margin-top: 32px;
+    }
+    
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .table-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+    }
+    
+    .table-stats {
+      font-size: 13px;
+      color: #64748b;
+      background: #1a1f2e;
+      padding: 6px 14px;
+      border-radius: 6px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    table thead {
+      background: #0f1419;
+    }
+    
+    table th {
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #2d3748;
+    }
+    
+    table td {
+      padding: 18px 20px;
+      color: #e2e8f0;
+      font-size: 14px;
+      border-bottom: 1px solid #2d3748;
+      vertical-align: middle;
+    }
+    
+    table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    table tbody tr {
+      transition: all 0.2s;
+    }
+    
+    table tbody tr:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
+    table button {
+      padding: 7px 14px;
+      font-size: 12px;
+      margin-right: 6px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+    
+    .empty-icon {
+      font-size: 48px;
+      opacity: 0.3;
+      margin-bottom: 16px;
+    }
+    
+    .empty-text {
+      font-size: 15px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    
+    .empty-subtext {
+      font-size: 13px;
+      color: #64748b;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Archived Sessions</h1>
-    <div style="margin-bottom:12px;"><a href="trainer-sessions.html">← Back to Sessions</a></div>
+  <div class="dashboard-container">
+    <div class="page-header">
+      <div>
+        <h1>Archived Sessions</h1>
+        <p class="section-subtitle">View and manage completed training sessions</p>
+      </div>
+      <a href="trainer-sessions.html" class="back-link">
+        <span>←</span> Back to Sessions
+      </a>
+    </div>
 
-    <table style="width:100%;border-collapse:collapse;margin-top:10px;">
-      <thead>
-        <tr style="border-bottom:1px solid #888"><th>Scenario</th><th>User</th><th>Status</th><th>Actions</th></tr>
-      </thead>
-      <tbody id="archBody"></tbody>
-    </table>
+    <div class="table-section">
+      <div class="table-header">
+        <h2 class="table-title">All Archived Sessions</h2>
+        <span class="table-stats" id="archiveCount">0 sessions</span>
+      </div>
+      
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 30%;">Scenario</th>
+            <th style="width: 25%;">User</th>
+            <th style="width: 15%;">Status</th>
+            <th style="width: 30%;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="archBody">
+          <tr>
+            <td colspan="4">
+              <div class="empty-state">
+                <div class="empty-icon">📦</div>
+                <div class="empty-text">No archived sessions</div>
+                <div class="empty-subtext">Completed sessions will appear here</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
+  
   <script src="trainer-sessions-archived.js"></script>
 </body>
 </html>
-
-

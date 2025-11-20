@@ -29,7 +29,7 @@
     }
     
     .page-header h1 {
-      font-size: 28px;
+      font-size: 22px;
       font-weight: 600;
       color: #ffffff;
       margin: 0;
@@ -60,13 +60,121 @@
       color: #60a5fa;
     }
     
+    .section-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin: 4px 0 0 0;
+    }
+    
+    /* Sessions Table */
+    .sessions-section {
+      margin-bottom: 48px;
+    }
+    
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .table-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0;
+    }
+    
+    .table-stats {
+      font-size: 13px;
+      color: #64748b;
+      background: #1a1f2e;
+      padding: 6px 14px;
+      border-radius: 6px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    table thead {
+      background: #0f1419;
+    }
+    
+    table th {
+      padding: 16px 20px;
+      text-align: left;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #2d3748;
+    }
+    
+    table td {
+      padding: 18px 20px;
+      color: #e2e8f0;
+      font-size: 14px;
+      border-bottom: 1px solid #2d3748;
+      vertical-align: middle;
+    }
+    
+    table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    table tbody tr {
+      transition: all 0.2s;
+    }
+    
+    table tbody tr:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
+    table button {
+      padding: 7px 14px;
+      font-size: 12px;
+      margin-right: 6px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #64748b;
+    }
+    
+    .empty-icon {
+      font-size: 48px;
+      opacity: 0.3;
+      margin-bottom: 16px;
+    }
+    
+    .empty-text {
+      font-size: 15px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+    
+    .empty-subtext {
+      font-size: 13px;
+      color: #64748b;
+    }
+    
     /* Create Session Section */
     .section-card {
       background: #1a1f2e;
       border: 1px solid #2d3748;
       padding: 28px 32px;
       border-radius: 12px;
-      margin-bottom: 40px;
+      margin-top: 48px;
     }
     
     .section-header {
@@ -77,7 +185,7 @@
     }
     
     .section-title {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       color: #ffffff;
       margin: 0;
@@ -92,12 +200,6 @@
       height: 24px;
       background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
       border-radius: 2px;
-    }
-    
-    .section-subtitle {
-      font-size: 13px;
-      color: #64748b;
-      margin: 8px 0 0 0;
     }
     
     /* Form Styling */
@@ -298,108 +400,6 @@
       border-color: #475569;
     }
     
-    /* Sessions Table */
-    .sessions-section {
-      margin-top: 48px;
-    }
-    
-    .table-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    
-    .table-title {
-      font-size: 20px;
-      font-weight: 600;
-      color: #ffffff;
-      margin: 0;
-    }
-    
-    .table-stats {
-      font-size: 13px;
-      color: #64748b;
-      background: #1a1f2e;
-      padding: 6px 14px;
-      border-radius: 6px;
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #1a1f2e;
-      border: 1px solid #2d3748;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    
-    table thead {
-      background: #0f1419;
-    }
-    
-    table th {
-      padding: 16px 20px;
-      text-align: left;
-      font-weight: 600;
-      color: #94a3b8;
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid #2d3748;
-    }
-    
-    table td {
-      padding: 18px 20px;
-      color: #e2e8f0;
-      font-size: 14px;
-      border-bottom: 1px solid #2d3748;
-      vertical-align: middle;
-    }
-    
-    table tbody tr:last-child td {
-      border-bottom: none;
-    }
-    
-    table tbody tr {
-      transition: all 0.2s;
-    }
-    
-    table tbody tr:hover {
-      background: rgba(59, 130, 246, 0.05);
-    }
-    
-    table button {
-      padding: 7px 14px;
-      font-size: 12px;
-      margin-right: 6px;
-      border-radius: 6px;
-      font-weight: 600;
-    }
-    
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #64748b;
-    }
-    
-    .empty-icon {
-      font-size: 48px;
-      opacity: 0.3;
-      margin-bottom: 16px;
-    }
-    
-    .empty-text {
-      font-size: 15px;
-      color: #94a3b8;
-      margin-bottom: 8px;
-    }
-    
-    .empty-subtext {
-      font-size: 13px;
-      color: #64748b;
-    }
-    
     /* Responsive */
     @media (max-width: 768px) {
       .dashboard-container {
@@ -445,7 +445,37 @@
       </div>
     </div>
     
-    <!-- Create Session Section -->
+    <!-- Sessions List (Now First) -->
+    <div class="sessions-section">
+      <div class="table-header">
+        <h2 class="table-title">All Sessions</h2>
+        <span class="table-stats" id="sessionCount">0 sessions</span>
+      </div>
+      
+      <table id="sessionsTable">
+        <thead>
+          <tr>
+            <th style="width: 25%;">Scenario</th>
+            <th style="width: 30%;">Team Members</th>
+            <th style="width: 15%;">Status</th>
+            <th style="width: 30%;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="sessionsBody">
+          <tr>
+            <td colspan="4">
+              <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <div class="empty-text">No sessions created yet</div>
+                <div class="empty-subtext">Create your first session below to get started</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Create Session Section (Now Below) -->
     <div class="section-card">
       <div class="section-header">
         <div>
@@ -485,36 +515,6 @@
           </button>
         </div>
       </form>
-    </div>
-
-    <!-- Sessions List -->
-    <div class="sessions-section">
-      <div class="table-header">
-        <h2 class="table-title">All Sessions</h2>
-        <span class="table-stats" id="sessionCount">0 sessions</span>
-      </div>
-      
-      <table id="sessionsTable">
-        <thead>
-          <tr>
-            <th style="width: 25%;">Scenario</th>
-            <th style="width: 30%;">Team Members</th>
-            <th style="width: 15%;">Status</th>
-            <th style="width: 30%;">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="sessionsBody">
-          <tr>
-            <td colspan="4">
-              <div class="empty-state">
-                <div class="empty-icon">📋</div>
-                <div class="empty-text">No sessions created yet</div>
-                <div class="empty-subtext">Create your first session above to get started</div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
   
