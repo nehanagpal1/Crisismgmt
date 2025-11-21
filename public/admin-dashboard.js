@@ -29,7 +29,7 @@ async function loadAllUsers() {
 
 async function loadScenarios() {
   try {
-    const res = await fetch('/api/trainer/scenarios');
+    const res = await fetch('/api/admin/scenarios');
     if (!res.ok) throw new Error('Failed to load scenarios');
     return await res.json();
   } catch (err) {
@@ -40,7 +40,7 @@ async function loadScenarios() {
 
 async function loadSessions() {
   try {
-    const res = await fetch('/api/trainer/sessions');
+    const res = await fetch('/api/admin/sessions');
     if (!res.ok) throw new Error('Failed to load sessions');
     return await res.json();
   } catch (err) {
@@ -67,7 +67,8 @@ function updateStats(stats) {
 
 // Get trainer statistics
 function getTrainerStats(trainerId) {
-  const trainerScenarios = allScenarios.filter(s => s.trainerId && s.trainerId.toString() === trainerId);
+  // Note: Scenario model uses 'createdBy' field, Session model uses 'trainerId' field
+  const trainerScenarios = allScenarios.filter(s => s.createdBy && s.createdBy.toString() === trainerId);
   const trainerSessions = allSessions.filter(s => s.trainerId && s.trainerId.toString() === trainerId);
   const activeSessions = trainerSessions.filter(s => s.status === 'active');
   
@@ -135,9 +136,6 @@ function renderTrainers(trainers) {
         <button class="btn-view" onclick="viewTrainerDashboard('${trainer._id}', '${trainer.username}')">
           View Dashboard
         </button>
-        <button class="btn-manage" onclick="manageTrainer('${trainer._id}')">
-          Manage
-        </button>
       </div>
     `;
     
@@ -203,14 +201,36 @@ document.getElementById('logoutForm').addEventListener('submit', async (e) => {
   location.href = '/';
 });
 
+// Helper to show/hide loading
+function showLoading(show = true) {
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    if (show) {
+      overlay.classList.remove('hidden');
+    } else {
+      overlay.classList.add('hidden');
+    }
+  }
+}
+
 // Initialize
+showLoading(true);
 ensureAdmin().then(async (admin) => {
-  if (!admin) return;
+  if (!admin) {
+    showLoading(false);
+    return;
+  }
   
   // Set admin name
   document.getElementById('userName').textContent = admin.username || 'Admin';
   
   // Load and render data
   await loadAndRender();
+  
+  // Hide loading
+  showLoading(false);
+}).catch(err => {
+  console.error('Error loading admin dashboard:', err);
+  showLoading(false);
 });
 

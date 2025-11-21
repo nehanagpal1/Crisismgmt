@@ -1,4 +1,6 @@
+function showLoading(show=true){const o=document.getElementById('loadingOverlay');if(o){if(show){o.classList.remove('hidden');}else{o.classList.add('hidden');}}}
 function getQuery(name){const u=new URL(location.href);return u.searchParams.get(name);}
+function getViewingTrainerId(){const u=new URLSearchParams(window.location.search);return u.get('viewAs');}
 
 async function ensureTrainer(){const r=await fetch('/check-session');const d=await r.json();if(!d.loggedIn||(d.role!=='trainer'&&d.role!=='admin')){location.href='/';return null;}return d;}
 
@@ -26,9 +28,17 @@ function displayAnalysis(session) {
   analysisDiv.innerHTML = html;
 }
 
+showLoading(true);
 ensureTrainer().then(async ()=>{
+  // Update back link to preserve viewAs parameter
+  const viewingTrainerId=getViewingTrainerId();
+  if(viewingTrainerId){
+    const backLink=document.querySelector('a[href="trainer-sessions.html"]');
+    if(backLink){backLink.href=`trainer-sessions.html?viewAs=${viewingTrainerId}`;}
+  }
+  
   const id=getQuery('sessionId');
-  if(!id){document.getElementById('info').textContent='Missing sessionId';return;}
+  if(!id){document.getElementById('info').textContent='Missing sessionId';showLoading(false);return;}
   const [rows, session] = await Promise.all([loadResponses(id), loadSession(id)]);
   const body=document.getElementById('respBody');
   body.innerHTML='';
@@ -38,6 +48,7 @@ ensureTrainer().then(async ()=>{
     body.appendChild(tr);
   });
   displayAnalysis(session);
-});
+  showLoading(false);
+}).catch(()=>showLoading(false));
 
 

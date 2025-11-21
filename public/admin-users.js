@@ -1,6 +1,18 @@
 let allUsers = [];
 let filteredUsers = [];
 
+// Helper to show/hide loading
+function showLoading(show = true) {
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    if (show) {
+      overlay.classList.remove('hidden');
+    } else {
+      overlay.classList.add('hidden');
+    }
+  }
+}
+
 // Ensure admin is logged in
 async function ensureAdmin() {
   const res = await fetch('/check-session');
@@ -244,8 +256,16 @@ document.getElementById('editModal').addEventListener('click', (e) => {
 });
 
 // Initialize
+showLoading(true);
 ensureAdmin().then(async (admin) => {
-  if (!admin) return;
+  if (!admin) {
+    showLoading(false);
+    return;
+  }
   await loadAndRenderUsers();
+  showLoading(false);
+}).catch(err => {
+  console.error('Error initializing admin users:', err);
+  showLoading(false);
 });
 

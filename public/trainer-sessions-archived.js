@@ -1,7 +1,16 @@
+function showLoading(show=true){const o=document.getElementById('loadingOverlay');if(o){if(show){o.classList.remove('hidden');}else{o.classList.add('hidden');}}}
+function getViewingTrainerId(){const u=new URLSearchParams(window.location.search);return u.get('viewAs');}
 async function ensureTrainer(){const r=await fetch('/check-session');const d=await r.json();if(!d.loggedIn||(d.role!=='trainer'&&d.role!=='admin')){location.href='/';return null;}return d;}
 async function loadArchived(){const r=await fetch('/api/trainer/sessions-archived');return await r.json();}
 
+showLoading(true);
 ensureTrainer().then(async ()=>{
+  // Update back link to preserve viewAs parameter
+  const viewingTrainerId=getViewingTrainerId();
+  if(viewingTrainerId){
+    const backLink=document.querySelector('a[href="trainer-sessions.html"]');
+    if(backLink){backLink.href=`trainer-sessions.html?viewAs=${viewingTrainerId}`;}
+  }
   const rows = await loadArchived();
   const body = document.getElementById('archBody');
   body.innerHTML = '';
@@ -24,6 +33,7 @@ ensureTrainer().then(async ()=>{
         </td>
       </tr>
     `;
+    showLoading(false);
     return;
   }
   
@@ -37,7 +47,15 @@ ensureTrainer().then(async ()=>{
     body.appendChild(tr);
   });
   body.querySelectorAll('button[data-act="view"]').forEach(btn=>{
-    btn.addEventListener('click',()=>{const id=btn.getAttribute('data-id');location.href=`trainer-session-responses.html?sessionId=${encodeURIComponent(id)}`;});
+    btn.addEventListener('click',()=>{
+      const id=btn.getAttribute('data-id');
+      const viewingTrainerId=getViewingTrainerId();
+      if(viewingTrainerId){
+        location.href=`trainer-session-responses.html?sessionId=${encodeURIComponent(id)}&viewAs=${viewingTrainerId}`;
+      }else{
+        location.href=`trainer-session-responses.html?sessionId=${encodeURIComponent(id)}`;
+      }
+    });
   });
   body.querySelectorAll('button[data-act="delete"]').forEach(btn=>{
     btn.addEventListener('click', async()=>{
@@ -51,4 +69,5 @@ ensureTrainer().then(async ()=>{
       } catch(e){alert(e.message||'Network error');}
     });
   });
-});
+  showLoading(false);
+}).catch(()=>showLoading(false));

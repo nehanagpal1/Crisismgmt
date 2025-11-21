@@ -1,3 +1,6 @@
+function showLoading(show=true){const o=document.getElementById('loadingOverlay');if(o){if(show){o.classList.remove('hidden');}else{o.classList.add('hidden');}}}
+function getViewingTrainerId(){const u=new URLSearchParams(window.location.search);return u.get('viewAs');}
+
 const urlParams = new URLSearchParams(window.location.search);
 const sessionId = urlParams.get('sessionId');
 
@@ -128,11 +131,30 @@ async function submitAnalysis() {
     return;
   }
   document.getElementById('feedbackMsg').textContent = 'Analysis submitted and marked complete!';
-  setTimeout(() => window.location = 'trainer-sessions.html', 1200);
+  
+  // Preserve viewAs parameter when redirecting
+  const viewingTrainerId=getViewingTrainerId();
+  setTimeout(() => {
+    if(viewingTrainerId){
+      window.location = `trainer-sessions.html?viewAs=${viewingTrainerId}`;
+    }else{
+      window.location = 'trainer-sessions.html';
+    }
+  }, 1200);
 }
 
 window.addEventListener('DOMContentLoaded', ()=>{
-  loadForm();
+  showLoading(true);
+  loadForm().then(()=>showLoading(false)).catch(()=>showLoading(false));
   document.getElementById('completeBtn').onclick = ()=>submitAnalysis();
-  document.getElementById('backBtn').onclick = ()=>window.location = 'trainer-sessions.html';
+  
+  // Preserve viewAs parameter on back button
+  const viewingTrainerId=getViewingTrainerId();
+  document.getElementById('backBtn').onclick = ()=>{
+    if(viewingTrainerId){
+      window.location = `trainer-sessions.html?viewAs=${viewingTrainerId}`;
+    }else{
+      window.location = 'trainer-sessions.html';
+    }
+  };
 });

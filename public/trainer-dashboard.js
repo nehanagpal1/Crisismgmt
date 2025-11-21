@@ -90,6 +90,13 @@ function renderActiveSessions(sessions) {
       teamInfo = `1 participant active`;
     }
     
+    // Build monitor session URL with viewAs parameter if present
+    const viewingTrainerId = getViewingTrainerId();
+    let monitorUrl = `trainer-session-responses.html?sessionId=${session._id}`;
+    if (viewingTrainerId) {
+      monitorUrl += `&viewAs=${viewingTrainerId}`;
+    }
+    
     card.innerHTML = `
       <div class="session-header">
         <div class="session-info">
@@ -99,7 +106,7 @@ function renderActiveSessions(sessions) {
         </div>
         <div class="session-actions">
           <span class="badge-live">Live</span>
-          <button class="btn-monitor" onclick="location.href='trainer-session-responses.html?sessionId=${session._id}'">
+          <button class="btn-monitor" onclick="location.href='${monitorUrl}'">
             Monitor Session
           </button>
         </div>
@@ -196,9 +203,25 @@ async function deleteScenario(scenarioId) {
   }
 }
 
+// Helper to show/hide loading
+function showLoading(show = true) {
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    if (show) {
+      overlay.classList.remove('hidden');
+    } else {
+      overlay.classList.add('hidden');
+    }
+  }
+}
+
 // Initialize dashboard
+showLoading(true);
 ensureTrainer().then(async (user) => {
-  if (!user) return;
+  if (!user) {
+    showLoading(false);
+    return;
+  }
   
   const viewingTrainerId = getViewingTrainerId();
   
@@ -235,19 +258,6 @@ ensureTrainer().then(async (user) => {
       backLink.style.background = 'transparent';
     };
     headerActions.insertBefore(backLink, headerActions.firstChild);
-    
-    // Add user management link
-    const adminLink = document.createElement('a');
-    adminLink.href = 'admin-users.html';
-    adminLink.style.cssText = 'color:#f59e0b;text-decoration:none;font-size:14px;font-weight:600;padding:8px 16px;border:1px solid #f59e0b;border-radius:8px;transition:all 0.2s;margin-left:12px;';
-    adminLink.innerHTML = '👥 User Management';
-    adminLink.onmouseover = () => {
-      adminLink.style.background = 'rgba(245, 158, 11, 0.1)';
-    };
-    adminLink.onmouseout = () => {
-      adminLink.style.background = 'transparent';
-    };
-    headerActions.insertBefore(adminLink, headerActions.firstChild);
   }
   
   // Load data
@@ -265,6 +275,12 @@ ensureTrainer().then(async (user) => {
   
   // Render scenarios
   renderScenarios(scenarios);
+  
+  // Hide loading
+  showLoading(false);
+}).catch(err => {
+  console.error('Error loading dashboard:', err);
+  showLoading(false);
 });
 
 // Navigation with viewAs parameter
@@ -274,6 +290,15 @@ function navigateToSessions() {
     location.href = `trainer-sessions.html?viewAs=${viewingTrainerId}`;
   } else {
     location.href = 'trainer-sessions.html';
+  }
+}
+
+function navigateToAllScenarios() {
+  const viewingTrainerId = getViewingTrainerId();
+  if (viewingTrainerId) {
+    location.href = `trainer-scenarios.html?viewAs=${viewingTrainerId}`;
+  } else {
+    location.href = 'trainer-scenarios.html';
   }
 }
 

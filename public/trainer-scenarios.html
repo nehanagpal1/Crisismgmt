@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>All Scenarios</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: #0f1419;
+      color: #e2e8f0;
+    }
+    
+    .dashboard-container {
+      background: #0f1419;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 40px 60px;
+      min-height: 100vh;
+    }
+    
+    /* Page Header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    
+    .page-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 0 0 4px 0;
+    }
+    
+    .page-subtitle {
+      font-size: 14px;
+      color: #64748b;
+      margin: 0;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .nav-link {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    
+    .nav-link:hover {
+      background: #1e293b;
+      border-color: #475569;
+    }
+    
+    /* Filter Section */
+    .filter-section {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .filter-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+    
+    .filter-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .filter-btn {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .filter-btn:hover {
+      background: #1e293b;
+      border-color: #475569;
+    }
+    
+    .filter-btn.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #ffffff;
+    }
+    
+    .search-box {
+      flex: 1;
+      max-width: 400px;
+    }
+    
+    .search-input {
+      width: 100%;
+      background: #0f1419;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    /* Scenarios Table */
+    .table-wrapper {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    thead {
+      background: #111827;
+    }
+    
+    th, td {
+      padding: 16px 18px;
+      text-align: left;
+      border-bottom: 1px solid #1f2937;
+      font-size: 13px;
+    }
+    
+    th {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+    }
+    
+    tbody tr:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
+    .scenario-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+    
+    .scenario-description {
+      font-size: 12px;
+      color: #94a3b8;
+      margin: 0;
+      max-width: 520px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .scenario-meta {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    
+    .scenario-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .badge-draft {
+      background: #334155;
+      color: #94a3b8;
+    }
+    
+    .badge-active {
+      background: #065f46;
+      color: #6ee7b7;
+    }
+    
+    .badge-archived {
+      background: #1e293b;
+      color: #64748b;
+    }
+    
+    .badge-template {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    .scenario-description {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 16px;
+      line-height: 1.6;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    
+    .scenario-meta {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 16px;
+    }
+    
+    .scenario-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn-small {
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-view {
+      background: transparent;
+      border: 1px solid #475569;
+      color: #e2e8f0;
+    }
+    
+    .btn-view:hover {
+      background: #334155;
+      border-color: #64748b;
+    }
+    
+    .btn-edit {
+      background: #3b82f6;
+      color: #ffffff;
+    }
+    
+    .btn-edit:hover {
+      background: #2563eb;
+    }
+    
+    .btn-delete {
+      background: #dc2626;
+      color: #ffffff;
+    }
+    
+    .btn-delete:hover {
+      background: #b91c1c;
+    }
+    
+    .btn-archive {
+      background: #f59e0b;
+      color: #0f172a;
+    }
+    
+    .btn-archive:hover {
+      background: #d97706;
+    }
+    
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 32px;
+    }
+    
+    .pagination-btn {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      color: #e2e8f0;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 40px;
+    }
+    
+    .pagination-btn:hover:not(:disabled) {
+      background: #334155;
+      border-color: #475569;
+    }
+    
+    .pagination-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .pagination-btn.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #ffffff;
+    }
+    
+    .pagination-info {
+      color: #64748b;
+      font-size: 13px;
+      margin: 0 12px;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #64748b;
+    }
+    
+    .empty-icon {
+      font-size: 64px;
+      opacity: 0.3;
+      margin-bottom: 20px;
+    }
+    
+    .empty-text {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #94a3b8;
+    }
+    
+    .empty-subtext {
+      font-size: 14px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading scenarios...</div>
+  </div>
+
+  <div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">All Scenarios</h1>
+        <p class="page-subtitle">Browse and manage all training scenarios</p>
+      </div>
+      <div class="header-actions">
+        <a href="trainer-dashboard.html" class="nav-link" id="dashboardLink">
+          <span>←</span> Dashboard
+        </a>
+        <button id="createScenarioBtn" class="btn-primary btn-icon">+ Create Scenario</button>
+      </div>
+    </div>
+    
+    <!-- Filter Section -->
+    <div class="filter-section">
+      <span class="filter-label">Filter:</span>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="active">Active</button>
+        <button class="filter-btn" data-filter="draft">Draft</button>
+        <button class="filter-btn" data-filter="archived">Archived</button>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search scenarios...">
+      </div>
+    </div>
+    
+    <!-- Scenarios Table -->
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:30%;">Scenario</th>
+            <th style="width:20%;">Template</th>
+            <th style="width:15%;">Status</th>
+            <th style="width:15%;">Created</th>
+            <th style="width:20%;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="scenariosBody">
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <div class="empty-icon">📋</div>
+                <div class="empty-text">Loading scenarios...</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="pagination" id="pagination">
+      <button class="pagination-btn" id="prevBtn" disabled>← Prev</button>
+      <span class="pagination-info" id="pageInfo">Page 1 of 1</span>
+      <button class="pagination-btn" id="nextBtn" disabled>Next →</button>
+    </div>
+  </div>
+  
+  <script src="trainer-scenarios.js"></script>
+</body>
+</html>
+

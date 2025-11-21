@@ -2,6 +2,18 @@ let currentUserId = null;
 let allUsers = [];
 let teamMemberCount = 0;
 
+// Helper to show/hide loading
+function showLoading(show = true) {
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    if (show) {
+      overlay.classList.remove('hidden');
+    } else {
+      overlay.classList.add('hidden');
+    }
+  }
+}
+
 // Check if admin is viewing as a trainer
 function getViewingTrainerId() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -211,7 +223,12 @@ async function render() {
       const newStatus = sel.value;
       // Handle Analyse - opens analysis form page
       if(newStatus==='analysing'){
-        window.location = `trainer-analysis.html?sessionId=${encodeURIComponent(id)}`;
+        const viewingTrainerId = getViewingTrainerId();
+        if(viewingTrainerId){
+          window.location = `trainer-analysis.html?sessionId=${encodeURIComponent(id)}&viewAs=${viewingTrainerId}`;
+        }else{
+          window.location = `trainer-analysis.html?sessionId=${encodeURIComponent(id)}`;
+        }
         return;
       }
       // Otherwise update immediately
@@ -224,7 +241,15 @@ async function render() {
   });
 
   tbody.querySelectorAll('button[data-act="responses"]').forEach(btn => {
-    btn.addEventListener('click', () => { const id=btn.getAttribute('data-id'); location.href=`trainer-session-responses.html?sessionId=${encodeURIComponent(id)}`; });
+    btn.addEventListener('click', () => {
+      const id=btn.getAttribute('data-id');
+      const viewingTrainerId = getViewingTrainerId();
+      if(viewingTrainerId){
+        location.href=`trainer-session-responses.html?sessionId=${encodeURIComponent(id)}&viewAs=${viewingTrainerId}`;
+      }else{
+        location.href=`trainer-session-responses.html?sessionId=${encodeURIComponent(id)}`;
+      }
+    });
   });
 }
 
@@ -287,9 +312,23 @@ async function createSession() {
   }
 }
 
-ensureTrainer().then(() => { 
+showLoading(true);
+ensureTrainer().then(() => {
+  // Update navigation links to preserve viewAs parameter
+  const viewingTrainerId = getViewingTrainerId();
+  if (viewingTrainerId) {
+    const dashboardLink = document.querySelector('a[href="trainer-dashboard.html"]');
+    const archivedLink = document.querySelector('a[href="trainer-sessions-archived.html"]');
+    if (dashboardLink) {
+      dashboardLink.href = `trainer-dashboard.html?viewAs=${viewingTrainerId}`;
+    }
+    if (archivedLink) {
+      archivedLink.href = `trainer-sessions-archived.html?viewAs=${viewingTrainerId}`;
+    }
+  }
+  
   document.getElementById('createSessionBtn').addEventListener('click', createSession); 
   document.getElementById('refreshBtn').addEventListener('click', render); 
   document.getElementById('addTeamMemberBtn').addEventListener('click', addTeamMember);
-  render(); 
-});
+  render().then(() => showLoading(false)).catch(() => showLoading(false));
+}).catch(() => showLoading(false));

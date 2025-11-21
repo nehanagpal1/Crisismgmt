@@ -1,3 +1,8 @@
+function getViewingTrainerId() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('viewAs');
+}
+
 async function ensureTrainer() {
   const res = await fetch('/check-session');
   const data = await res.json();
@@ -8,7 +13,25 @@ async function ensureTrainer() {
   return data;
 }
 
-ensureTrainer();
+ensureTrainer().then(() => {
+  // Update back link to preserve viewAs parameter
+  const viewingTrainerId = getViewingTrainerId();
+  if (viewingTrainerId) {
+    const backLink = document.querySelector('a[href="trainer-dashboard.html"]');
+    if (backLink) {
+      backLink.href = `trainer-dashboard.html?viewAs=${viewingTrainerId}`;
+    }
+  }
+  
+  // Handle cancel button
+  document.getElementById('cancelBtn').addEventListener('click', () => {
+    if (viewingTrainerId) {
+      location.href = `trainer-dashboard.html?viewAs=${viewingTrainerId}`;
+    } else {
+      location.href = 'trainer-dashboard.html';
+    }
+  });
+});
 
 document.getElementById('createScenarioForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -28,7 +51,14 @@ document.getElementById('createScenarioForm').addEventListener('submit', async (
       alert(data.error || `Failed (${res.status}) to create scenario`);
       return;
     }
-    location.href = 'trainer-dashboard.html';
+    
+    // Preserve viewAs parameter when redirecting
+    const viewingTrainerId = getViewingTrainerId();
+    if (viewingTrainerId) {
+      location.href = `trainer-dashboard.html?viewAs=${viewingTrainerId}`;
+    } else {
+      location.href = 'trainer-dashboard.html';
+    }
   } catch (err) {
     alert(err.message || 'Network error');
   }

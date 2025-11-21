@@ -27,6 +27,18 @@ const waitingMsg = document.getElementById('waitingMsg');
 
 let user = null;
 
+// Helper to show/hide loading
+function showLoading(show = true) {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        if (show) {
+            overlay.classList.remove('hidden');
+        } else {
+            overlay.classList.add('hidden');
+        }
+    }
+}
+
 // Get sessionId from URL parameter
 const urlParams = new URLSearchParams(window.location.search);
 const sessionIdParam = urlParams.get('sessionId');
@@ -245,16 +257,24 @@ document.getElementById('logoutForm').addEventListener('submit', async (e) => {
 });
 
 // Initialize
+showLoading(true);
 fetchUserInfo().then(async () => {
     if (!sessionIdParam) {
         scenarioText.textContent = 'No session selected. Please go back to your dashboard.';
         responseForm.style.display = 'none';
         document.getElementById('timer').style.display = 'none';
+        showLoading(false);
         return;
     }
     
     const success = await fetchSessionById(sessionIdParam);
     if (success) {
         startTimer();
+        showLoading(false);
+    } else {
+        showLoading(false);
     }
+}).catch(err => {
+    console.error('Error initializing game:', err);
+    showLoading(false);
 });

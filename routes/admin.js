@@ -134,13 +134,43 @@ router.delete('/users/:id', isAdmin, async (req, res) => {
   }
 });
 
+// GET all scenarios (for admin dashboard)
+router.get('/scenarios', isAdmin, async (req, res) => {
+  try {
+    const Scenario = require('../models/Scenario');
+    
+    const scenarios = await Scenario.find({}).sort({ createdAt: -1 });
+    res.json(scenarios);
+  } catch (err) {
+    console.error('Error fetching all scenarios:', err);
+    res.status(500).json({ error: 'Failed to fetch scenarios' });
+  }
+});
+
+// GET all sessions (for admin dashboard)
+router.get('/sessions', isAdmin, async (req, res) => {
+  try {
+    const PlaySession = require('../models/Session');
+    
+    const sessions = await PlaySession.find({})
+      .populate('scenarioId', 'title numRounds')
+      .populate('teamMembers.userId', 'username')
+      .sort({ createdAt: -1 });
+    
+    res.json(sessions);
+  } catch (err) {
+    console.error('Error fetching all sessions:', err);
+    res.status(500).json({ error: 'Failed to fetch sessions' });
+  }
+});
+
 // GET trainer's scenarios
 router.get('/trainer/:trainerId/scenarios', isAdmin, async (req, res) => {
   try {
     const { trainerId } = req.params;
     const Scenario = require('../models/Scenario');
     
-    const scenarios = await Scenario.find({ trainerId }).sort({ createdAt: -1 });
+    const scenarios = await Scenario.find({ createdBy: trainerId }).sort({ createdAt: -1 });
     res.json(scenarios);
   } catch (err) {
     console.error('Error fetching trainer scenarios:', err);

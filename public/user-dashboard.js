@@ -101,9 +101,29 @@ document.getElementById('logoutForm').addEventListener('submit', async (e) => {
     location.href = '/';
 });
 
+// Helper to show/hide loading
+function showLoading(show = true) {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        if (show) {
+            overlay.classList.remove('hidden');
+        } else {
+            overlay.classList.add('hidden');
+        }
+    }
+}
+
 // Initialize
+showLoading(true);
 fetchUserInfo().then(() => {
     fetchMySessions().then(sessions => {
         renderSessions(sessions);
+        showLoading(false);
+    }).catch(err => {
+        console.error('Error loading sessions:', err);
+        showLoading(false);
     });
+}).catch(err => {
+    console.error('Error loading user info:', err);
+    showLoading(false);
 });

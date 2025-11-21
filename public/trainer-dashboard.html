@@ -385,6 +385,12 @@
   </style>
 </head>
 <body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading trainer dashboard...</div>
+  </div>
+
   <div class="dashboard-container">
     <!-- Header -->
     <div class="dashboard-header">
@@ -431,7 +437,7 @@
     <!-- Active Sessions -->
     <div class="section-header">
       <h2 class="section-title">Active Sessions</h2>
-      <button onclick="location.href='trainer-sessions.html'" class="btn-create">
+      <button onclick="navigateToSessions()" class="btn-create">
         View All Sessions
       </button>
     </div>
@@ -445,9 +451,14 @@
     <!-- Scenarios -->
     <div class="section-header">
       <h2 class="section-title">Scenarios</h2>
-      <button id="createScenarioBtn" class="btn-create">
-        <span>+</span> Create Scenario
-      </button>
+      <div style="display: flex; gap: 12px;">
+        <button onclick="navigateToAllScenarios()" class="btn-create" style="background: transparent; border: 1px solid #334155; color: #e2e8f0;">
+          View All Scenarios
+        </button>
+        <button id="createScenarioBtn" class="btn-create">
+          <span>+</span> Create Scenario
+        </button>
+      </div>
     </div>
     <div id="scenarioList">
       <div class="empty-state">
