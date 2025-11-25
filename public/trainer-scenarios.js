@@ -118,10 +118,6 @@ function renderScenarios() {
       ? `<button class="btn-small btn-activate" onclick="markActive('${scenario._id}')">Activate</button>`
       : '';
     
-    const archiveBtn = scenario.status !== 'archived' 
-      ? `<button class="btn-small btn-archive" onclick="markArchived('${scenario._id}')">Archive</button>`
-      : '';
-    
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>
@@ -148,7 +144,6 @@ function renderScenarios() {
         <div class="scenario-actions">
           <button class="btn-small btn-edit" onclick="editScenario('${scenario._id}')">Edit</button>
           ${activateBtn}
-          ${archiveBtn}
         </div>
       </td>
     `;
@@ -227,56 +222,6 @@ async function markActive(scenarioId) {
   }
 }
 
-// Archive scenario
-async function markArchived(scenarioId) {
-  let scenario = allScenarios.find(s => s._id === scenarioId);
-  if (!scenario) return;
-  
-  // Ensure we have all required fields (initialText may not be included in list API)
-  if (!scenario.initialText) {
-    try {
-      const detailRes = await fetch(`/api/trainer/scenarios/${scenarioId}`);
-      if (detailRes.ok) {
-        const detailData = await detailRes.json();
-        scenario = detailData.scenario || scenario;
-      }
-    } catch (err) {
-      console.error('Failed to load scenario detail', err);
-    }
-  }
-  
-  if (!confirm('Archive this scenario? Active sessions cannot use archived scenarios.')) return;
-  
-  const payload = {
-    title: scenario.title,
-    description: scenario.description,
-    initialText: scenario.initialText,
-    status: 'archived',
-    templateType: scenario.templateType,
-    numRounds: scenario.numRounds,
-    responseTimerSec: scenario.responseTimerSec
-  };
-  
-  try {
-    const res = await fetch(`/api/trainer/scenarios/${scenarioId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      alert(err.error || `Failed to archive scenario (${res.status})`);
-      return;
-    }
-    
-    alert('Scenario archived successfully');
-    allScenarios = await loadScenarios();
-    filterScenarios();
-  } catch (e) {
-    alert(e.message || 'Network error');
-  }
-}
 
 // Initialize
 showLoading(true);
