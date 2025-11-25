@@ -114,6 +114,10 @@ function renderScenarios() {
       ? `<span class="badge badge-template">${scenario.templateType}</span>` 
       : '<span class="badge badge-template" style="color:#94a3b8;border-color:rgba(148,163,184,0.4);background:rgba(148,163,184,0.1);">Custom</span>';
     
+    const activateBtn = scenario.status !== 'active' 
+      ? `<button class="btn-small btn-activate" onclick="markActive('${scenario._id}')">Activate</button>`
+      : '';
+    
     const archiveBtn = scenario.status !== 'archived' 
       ? `<button class="btn-small btn-archive" onclick="markArchived('${scenario._id}')">Archive</button>`
       : '';
@@ -143,6 +147,7 @@ function renderScenarios() {
       <td>
         <div class="scenario-actions">
           <button class="btn-small btn-edit" onclick="editScenario('${scenario._id}')">Edit</button>
+          ${activateBtn}
           ${archiveBtn}
         </div>
       </td>
@@ -168,6 +173,57 @@ function editScenario(scenarioId) {
     location.href = `trainer-edit-scenario.html?id=${scenarioId}&viewAs=${viewingTrainerId}`;
   } else {
     location.href = `trainer-edit-scenario.html?id=${scenarioId}`;
+  }
+}
+
+// Activate scenario
+async function markActive(scenarioId) {
+  let scenario = allScenarios.find(s => s._id === scenarioId);
+  if (!scenario) return;
+  
+  // Ensure we have all required fields (initialText may not be included in list API)
+  if (!scenario.initialText) {
+    try {
+      const detailRes = await fetch(`/api/trainer/scenarios/${scenarioId}`);
+      if (detailRes.ok) {
+        const detailData = await detailRes.json();
+        scenario = detailData.scenario || scenario;
+      }
+    } catch (err) {
+      console.error('Failed to load scenario detail', err);
+    }
+  }
+  
+  if (!confirm('Activate this scenario? It will be available for creating new sessions.')) return;
+  
+  const payload = {
+    title: scenario.title,
+    description: scenario.description,
+    initialText: scenario.initialText,
+    status: 'active',
+    templateType: scenario.templateType,
+    numRounds: scenario.numRounds,
+    responseTimerSec: scenario.responseTimerSec
+  };
+  
+  try {
+    const res = await fetch(`/api/trainer/scenarios/${scenarioId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.error || `Failed to activate scenario (${res.status})`);
+      return;
+    }
+    
+    alert('Scenario activated successfully');
+    allScenarios = await loadScenarios();
+    filterScenarios();
+  } catch (e) {
+    alert(e.message || 'Network error');
   }
 }
 
