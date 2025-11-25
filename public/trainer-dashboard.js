@@ -483,6 +483,15 @@ function navigateToSessions() {
   }
 }
 
+function navigateToCreateSession() {
+  const viewingTrainerId = getViewingTrainerId();
+  if (viewingTrainerId) {
+    location.href = `trainer-create-session.html?viewAs=${viewingTrainerId}`;
+  } else {
+    location.href = 'trainer-create-session.html';
+  }
+}
+
 function navigateToArchivedScenarios() {
   const viewingTrainerId = getViewingTrainerId();
   if (viewingTrainerId) {

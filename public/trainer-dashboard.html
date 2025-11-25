@@ -493,9 +493,14 @@
     <!-- Active Sessions -->
     <div class="section-header">
       <h2 class="section-title">Active Sessions</h2>
-      <button onclick="navigateToSessions()" class="btn-create">
-        View All Sessions
-      </button>
+      <div style="display: flex; gap: 12px;">
+        <button onclick="navigateToCreateSession()" class="btn-create">
+          <span>+</span> Create Session
+        </button>
+        <button onclick="navigateToSessions()" class="btn-create" style="background: transparent; border: 1px solid #334155; color: #e2e8f0;">
+          View All Sessions
+        </button>
+      </div>
     </div>
     <div id="activeSessionsList">
       <div class="empty-state">
