@@ -30,11 +30,13 @@ function displayAnalysis(session) {
 
 showLoading(true);
 ensureTrainer().then(async ()=>{
-  // Update back link to preserve viewAs parameter
+  // Update navigation links to preserve viewAs parameter
   const viewingTrainerId=getViewingTrainerId();
   if(viewingTrainerId){
-    const backLink=document.querySelector('a[href="trainer-sessions.html"]');
-    if(backLink){backLink.href=`trainer-sessions.html?viewAs=${viewingTrainerId}`;}
+    const dashboardLink=document.getElementById('dashboardLink');
+    const sessionsLink=document.getElementById('sessionsLink');
+    if(dashboardLink){dashboardLink.href=`trainer-dashboard.html?viewAs=${viewingTrainerId}`;}
+    if(sessionsLink){sessionsLink.href=`trainer-sessions.html?viewAs=${viewingTrainerId}`;}
   }
   
   const id=getQuery('sessionId');

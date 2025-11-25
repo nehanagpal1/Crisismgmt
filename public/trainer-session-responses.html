@@ -18,12 +18,45 @@
       min-height: 100vh;
     }
     
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    
     h1 {
       font-size: 28px;
       font-weight: 600;
       color: #ffffff;
-      margin: 0 0 24px 0;
+      margin: 0;
       text-align: left;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .nav-link {
+      color: #3b82f6;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 16px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .nav-link:hover {
+      background: #1e293b;
+      border-color: #3b82f6;
+      color: #60a5fa;
     }
     
     h2 {
@@ -32,19 +65,6 @@
       color: #ffffff;
       margin: 32px 0 16px 0;
       text-align: left;
-    }
-    
-    .back-link {
-      display: inline-block;
-      color: #3b82f6;
-      text-decoration: none;
-      font-size: 14px;
-      margin-bottom: 24px;
-      transition: color 0.2s;
-    }
-    
-    .back-link:hover {
-      color: #60a5fa;
     }
     
     #info {
@@ -141,9 +161,17 @@
   </div>
 
   <div class="dashboard-container">
-    <a href="trainer-sessions.html" class="back-link">← Back to Sessions</a>
-    
-    <h1>Response and Analysis</h1>
+    <div class="page-header">
+      <h1>Response and Analysis</h1>
+      <div class="header-actions">
+        <a href="trainer-sessions.html" class="nav-link" id="sessionsLink">
+          <span>📋</span> Sessions
+        </a>
+        <a href="trainer-dashboard.html" class="nav-link" id="dashboardLink">
+          <span>←</span> Dashboard
+        </a>
+      </div>
+    </div>
     
     <div id="info"></div>
     
