@@ -135,6 +135,41 @@ async function loadForm() {
   }
 }
 
+async function generateAiAnalysis() {
+  const btn = document.getElementById('generateAiBtn');
+  const feedback = document.getElementById('feedbackMsg');
+  try {
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<span>✨</span> Generating...';
+    }
+    showLoading(true);
+    const res = await fetch(`/api/trainer/sessions/${sessionId}/generate-analysis`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.error || `Failed to generate AI analysis (${res.status})`);
+      return;
+    }
+    const analysis = await res.json();
+    fillFields(analysis);
+    if (feedback) {
+      feedback.textContent = 'AI analysis generated. You can fine-tune it before submitting.';
+      feedback.classList.add('show');
+    }
+  } catch (e) {
+    alert(e.message || 'Failed to generate AI analysis');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span>✨</span> Generate AI Analysis';
+    }
+    showLoading(false);
+  }
+}
+
 async function submitAnalysis() {
   const fields = getFields();
   const body = {
@@ -174,6 +209,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
   showLoading(true);
   loadForm().then(()=>showLoading(false)).catch(()=>showLoading(false));
   document.getElementById('completeBtn').onclick = ()=>submitAnalysis();
+  document.getElementById('generateAiBtn').onclick = ()=>generateAiAnalysis();
   
   // Preserve viewAs parameter on back button
   const viewingTrainerId=getViewingTrainerId();
