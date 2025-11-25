@@ -65,13 +65,23 @@ async function loadResponses() {
     const roundData = responsesByRound[roundNum];
     const roundDiv = document.createElement('div');
     roundDiv.className = 'round-block';
+    const contentId = `round-content-${roundNum}`;
     
-    let html = `<div class="round-title">Round ${roundNum}</div>`;
-    html += `<div class="scenario-text">
-      <strong>Scenario:</strong><br>${roundData.scenario}
-    </div>`;
-    
-    html += '<div class="responses-heading">Team Responses</div>';
+    let html = `
+      <div class="round-header">
+        <div class="round-title">Round ${roundNum}</div>
+        <button type="button" class="round-toggle" data-target="${contentId}" aria-expanded="true">
+          <span class="toggle-icon">−</span>
+          <span class="toggle-text">Collapse</span>
+        </button>
+      </div>
+      <div id="${contentId}" class="round-content">
+        <div class="scenario-text">
+          <strong>Scenario:</strong><br>${roundData.scenario}
+        </div>
+        <div class="responses-heading">Team Responses</div>
+    `;
+
     roundData.responses.forEach((resp) => {
       const badge = resp.customName ? `<span class="response-badge">${resp.customName}</span>` : '';
       html += `<div class="response-item">
@@ -81,9 +91,27 @@ async function loadResponses() {
         <div class="response-text">${resp.response || '<em>No response</em>'}</div>
       </div>`;
     });
-    
+
+    html += '</div>'; // close round-content
     roundDiv.innerHTML = html;
     container.appendChild(roundDiv);
+
+    const toggleBtn = roundDiv.querySelector('.round-toggle');
+    const contentEl = roundDiv.querySelector('.round-content');
+    const iconEl = toggleBtn.querySelector('.toggle-icon');
+    const textEl = toggleBtn.querySelector('.toggle-text');
+
+    toggleBtn.addEventListener('click', () => {
+      const isCollapsed = contentEl.classList.toggle('collapsed');
+      toggleBtn.setAttribute('aria-expanded', String(!isCollapsed));
+      if (isCollapsed) {
+        iconEl.textContent = '+';
+        textEl.textContent = 'Expand';
+      } else {
+        iconEl.textContent = '−';
+        textEl.textContent = 'Collapse';
+      }
+    });
   });
   
   if (Object.keys(responsesByRound).length === 0) {
