@@ -289,15 +289,19 @@
       border-color: #475569;
     }
     
+    .analysis-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 32px 0 16px 0;
+    }
+    
     .ai-action-bar {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin: 24px 0 32px 0;
-    }
-    
-    .ai-action-bar .btn-ai {
-      width: fit-content;
+      gap: 6px;
+      align-items: flex-end;
     }
     
     .btn-ai {
@@ -368,14 +372,15 @@
       <!-- Responses will be displayed grouped by round with team member names -->
     </div>
     
-    <div class="ai-action-bar">
-      <button type="button" id="generateAiBtn" class="btn-ai">
-        <span>✨</span> Generate AI Analysis
-      </button>
-      <div class="ai-hint">AI-generated text can be edited before submission.</div>
+    <div class="analysis-header">
+      <h2>Analysis</h2>
+      <div class="ai-action-bar">
+        <button type="button" id="generateAiBtn" class="btn-ai">
+          <span>✨</span> Generate AI Analysis
+        </button>
+        <div class="ai-hint">AI-generated text can be edited before submission.</div>
+      </div>
     </div>
-    
-    <h2>Analysis</h2>
     <form id="analysisForm">
       <div class="analysis-section">
         <div class="section-title">1. Behavioural Interpretation</div>
