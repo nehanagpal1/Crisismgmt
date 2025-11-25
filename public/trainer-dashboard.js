@@ -120,9 +120,10 @@ function renderActiveSessions(sessions) {
 // Render scenarios
 function renderScenarios(scenarios) {
   const container = document.getElementById('scenarioList');
+  const viewingTrainerId = getViewingTrainerId();
   
-  // Filter out archived scenarios for main view
-  const visibleScenarios = scenarios.filter(s => s.status !== 'archived');
+  // Filter to show only draft and active scenarios
+  const visibleScenarios = scenarios.filter(s => s.status === 'draft' || s.status === 'active');
   
   if (visibleScenarios.length === 0) {
     container.innerHTML = `
@@ -145,14 +146,23 @@ function renderScenarios(scenarios) {
       statusBadge = '<span class="badge-status badge-draft">draft</span>';
     } else if (scenario.status === 'active') {
       statusBadge = '<span class="badge-status badge-active">active</span>';
-    } else if (scenario.status === 'archived') {
-      statusBadge = '<span class="badge-status badge-archived">archived</span>';
     }
+    
+    // Build edit URL with viewAs parameter if present
+    let editUrl = `trainer-edit-scenario.html?id=${scenario._id}`;
+    if (viewingTrainerId) {
+      editUrl += `&viewAs=${viewingTrainerId}`;
+    }
+    
+    // Activate button (only for draft scenarios)
+    const activateBtn = scenario.status === 'draft'
+      ? `<button class="btn-small btn-activate" onclick="activateScenario('${scenario._id}')">Activate</button>`
+      : '';
     
     card.innerHTML = `
       <div class="scenario-header">
         <div class="scenario-info">
-          <h3 onclick="location.href='trainer-edit-scenario.html?id=${scenario._id}'">${scenario.title}</h3>
+          <h3 onclick="location.href='${editUrl}'">${scenario.title}</h3>
           <div class="scenario-description">${scenario.description || 'No description provided'}</div>
           <div class="scenario-details">
             ${statusBadge}
@@ -162,14 +172,12 @@ function renderScenarios(scenarios) {
           </div>
         </div>
         <div class="scenario-actions">
-          <button class="btn-small btn-view" onclick="location.href='trainer-edit-scenario.html?id=${scenario._id}'">
-            View
+          <button class="btn-small btn-edit" onclick="location.href='${editUrl}'">
+            Edit
           </button>
-          <button class="btn-small btn-start" onclick="navigateToSessions()">
-            Start Session
-          </button>
-          <button class="btn-small btn-delete-small" onclick="deleteScenario('${scenario._id}')">
-            Delete
+          ${activateBtn}
+          <button class="btn-small btn-archive" onclick="archiveScenario('${scenario._id}')">
+            Archive
           </button>
         </div>
       </div>
@@ -179,24 +187,96 @@ function renderScenarios(scenarios) {
   });
 }
 
-// Delete scenario
-async function deleteScenario(scenarioId) {
-  if (!confirm('Are you sure you want to delete this scenario? This action cannot be undone.')) {
+// Activate scenario (from draft to active)
+async function activateScenario(scenarioId) {
+  if (!confirm('Activate this scenario? It will be available for creating new sessions.')) {
     return;
   }
   
   try {
+    // First, get the current scenario to preserve all fields
+    const getRes = await fetch(`/api/trainer/scenarios/${scenarioId}`);
+    if (!getRes.ok) {
+      const err = await getRes.json().catch(() => ({}));
+      alert(err.error || `Failed to load scenario (${getRes.status})`);
+      return;
+    }
+    
+    const data = await getRes.json();
+    const scenario = data.scenario;
+    
+    // Update with status set to active, preserving all other fields
+    const payload = {
+      title: scenario.title,
+      description: scenario.description,
+      initialText: scenario.initialText,
+      status: 'active',
+      templateType: scenario.templateType,
+      numRounds: scenario.numRounds,
+      responseTimerSec: scenario.responseTimerSec
+    };
+    
     const res = await fetch(`/api/trainer/scenarios/${scenarioId}`, {
-      method: 'DELETE'
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
     
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      alert(err.error || `Failed to delete scenario (${res.status})`);
+      alert(err.error || `Failed to activate scenario (${res.status})`);
       return;
     }
     
-    alert('Scenario deleted successfully');
+    alert('Scenario activated successfully');
+    location.reload();
+  } catch (e) {
+    alert(e.message || 'Network error');
+  }
+}
+
+// Archive scenario
+async function archiveScenario(scenarioId) {
+  if (!confirm('Archive this scenario? Active sessions cannot use archived scenarios.')) {
+    return;
+  }
+  
+  try {
+    // First, get the current scenario to preserve all fields
+    const getRes = await fetch(`/api/trainer/scenarios/${scenarioId}`);
+    if (!getRes.ok) {
+      const err = await getRes.json().catch(() => ({}));
+      alert(err.error || `Failed to load scenario (${getRes.status})`);
+      return;
+    }
+    
+    const data = await getRes.json();
+    const scenario = data.scenario;
+    
+    // Update with status set to archived, preserving all other fields
+    const payload = {
+      title: scenario.title,
+      description: scenario.description,
+      initialText: scenario.initialText,
+      status: 'archived',
+      templateType: scenario.templateType,
+      numRounds: scenario.numRounds,
+      responseTimerSec: scenario.responseTimerSec
+    };
+    
+    const res = await fetch(`/api/trainer/scenarios/${scenarioId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.error || `Failed to archive scenario (${res.status})`);
+      return;
+    }
+    
+    alert('Scenario archived successfully');
     location.reload();
   } catch (e) {
     alert(e.message || 'Network error');

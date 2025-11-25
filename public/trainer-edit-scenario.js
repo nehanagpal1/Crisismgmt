@@ -1,14 +1,55 @@
-function q(name){const u=new URL(location.href);return u.searchParams.get(name);} 
-async function ensureTrainer(){const r=await fetch('/check-session');const d=await r.json();if(!d.loggedIn||(d.role!=='trainer'&&d.role!=='admin')){location.href='/';return null;}return d;}
-async function loadScenario(id){const r=await fetch(`/api/trainer/scenarios/${id}`);return await r.json();}
-async function updateScenario(id, body){return fetch(`/api/trainer/scenarios/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});}
+function getQueryParam(name) {
+  const url = new URL(location.href);
+  return url.searchParams.get(name);
+}
 
-ensureTrainer().then(async()=>{
-  const id=q('id'); if(!id){document.getElementById('editNote').textContent='Missing scenario id'; return;}
-  const data=await loadScenario(id); if(data.error){document.getElementById('editNote').textContent=data.error; return;}
-  const s=data.scenario; let editable=data.editable;
+function getViewingTrainerId() {
+  return getQueryParam('viewAs');
+}
 
-  const form=document.getElementById('editForm');
+async function ensureTrainer() {
+  const r = await fetch('/check-session');
+  const d = await r.json();
+  if (!d.loggedIn || (d.role !== 'trainer' && d.role !== 'admin')) {
+    location.href = '/';
+    return null;
+  }
+  return d;
+}
+
+async function loadScenario(id) {
+  const r = await fetch(`/api/trainer/scenarios/${id}`);
+  return await r.json();
+}
+
+async function updateScenario(id, body) {
+  return fetch(`/api/trainer/scenarios/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+}
+
+ensureTrainer().then(async () => {
+  const id = getQueryParam('id');
+  if (!id) {
+    document.getElementById('editNote').textContent = 'Missing scenario id';
+    return;
+  }
+  
+  const data = await loadScenario(id);
+  if (data.error) {
+    document.getElementById('editNote').textContent = data.error;
+    return;
+  }
+  
+  const s = data.scenario;
+  let editable = data.editable;
+  
+  // Store the current status to preserve it when saving
+  const currentStatus = s.status || 'draft';
+  
+  const form = document.getElementById('editForm');
   const $ = sel => form.querySelector(sel);
   const fTitle = $('[name="title"]');
   const fDesc = $('[name="description"]');
@@ -17,7 +58,7 @@ ensureTrainer().then(async()=>{
   const fTimer = $('[name="responseTimerSec"]');
   const fTemplate = $('[name="templateType"]');
   const saveBtn = document.getElementById('saveBtn');
-
+  
   // Prefill with saved values
   fTitle.value = s.title || '';
   fDesc.value = s.description || '';
@@ -25,28 +66,45 @@ ensureTrainer().then(async()=>{
   fRounds.value = s.numRounds || 5;
   fTimer.value = s.responseTimerSec || 120;
   fTemplate.value = s.templateType || 'custom';
-
-  if(!editable){
-    document.getElementById('editNote').textContent='Scenario is locked because it has active session(s). You can view but not edit.';
-    [fTitle,fDesc,fInit,fRounds,fTimer,fTemplate].forEach(el=>el.disabled=true);
+  
+  if (!editable) {
+    document.getElementById('editNote').textContent = 'Scenario is locked because it has active session(s). You can view but not edit.';
+    [fTitle, fDesc, fInit, fRounds, fTimer, fTemplate].forEach(el => el.disabled = true);
     saveBtn.disabled = true;
   } else {
-    document.getElementById('editNote').textContent='You can edit this scenario.';
+    document.getElementById('editNote').textContent = 'You can edit this scenario.';
   }
-
-  form.addEventListener('submit', async (e)=>{
+  
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if(!editable){ alert('Scenario is locked due to active session(s).'); return; }
-    const payload={
+    if (!editable) {
+      alert('Scenario is locked due to active session(s).');
+      return;
+    }
+    
+    const payload = {
       title: fTitle.value.trim(),
       description: fDesc.value.trim(),
       initialText: fInit.value.trim(),
-      numRounds: Number(fRounds.value||5),
-      responseTimerSec: Number(fTimer.value||120),
-      templateType: fTemplate.value
+      numRounds: Number(fRounds.value || 5),
+      responseTimerSec: Number(fTimer.value || 120),
+      templateType: fTemplate.value,
+      status: currentStatus // Preserve the original status
     };
-    const res=await updateScenario(id,payload);
-    if(!res.ok){const err=await res.json().catch(()=>({}));alert(err.error||`Failed (${res.status}) to save`);return;}
-    location.href='trainer-dashboard.html';
+    
+    const res = await updateScenario(id, payload);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.error || `Failed (${res.status}) to save`);
+      return;
+    }
+    
+    // Navigate back with viewAs parameter if present
+    const viewingTrainerId = getViewingTrainerId();
+    if (viewingTrainerId) {
+      location.href = `trainer-dashboard.html?viewAs=${viewingTrainerId}`;
+    } else {
+      location.href = 'trainer-dashboard.html';
+    }
   });
 });
