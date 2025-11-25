@@ -61,9 +61,36 @@ function renderStats(stats) {
   document.getElementById('draftScenarios').textContent = stats.draft;
 }
 
+// Archive session
+async function archiveSession(sessionId) {
+  if (!confirm('Archive this session? Archived sessions cannot be reactivated.')) {
+    return;
+  }
+  
+  try {
+    const res = await fetch(`/api/trainer/sessions/${sessionId}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'archived' })
+    });
+    
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.error || `Failed to archive session (${res.status})`);
+      return;
+    }
+    
+    alert('Session archived successfully');
+    location.reload();
+  } catch (e) {
+    alert(e.message || 'Network error');
+  }
+}
+
 // Render active sessions
 function renderActiveSessions(sessions) {
   const container = document.getElementById('activeSessionsList');
+  // Filter to show only active sessions
   const activeSessions = sessions.filter(s => s.status === 'active');
   
   if (activeSessions.length === 0) {
@@ -108,6 +135,9 @@ function renderActiveSessions(sessions) {
           <span class="badge-live">Live</span>
           <button class="btn-monitor" onclick="location.href='${monitorUrl}'">
             Monitor Session
+          </button>
+          <button class="btn-archive-session" onclick="archiveSession('${session._id}')">
+            Archive Session
           </button>
         </div>
       </div>
