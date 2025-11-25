@@ -26,12 +26,12 @@ function displaySessionInfo(session) {
   const membersList = teamMembers.map(tm => {
     const username = tm.userId?.username || 'Unknown';
     const customName = tm.customName ? ` (${tm.customName})` : '';
-    return `<span style="display:inline-block;background:#fff;padding:4px 8px;margin:2px;border-radius:4px;border:1px solid #ccc;">${username}${customName}</span>`;
+    return `<span class="team-member-pill">${username}${customName}</span>`;
   }).join('');
   
   details.innerHTML = `
     <div><strong>Scenario:</strong> ${session.scenarioId?.title || 'N/A'}</div>
-    <div style="margin-top:8px;"><strong>Team Members:</strong><br>${membersList || 'No team members'}</div>
+    <div style="margin-top:8px;"><strong>Team Members:</strong><br><div class="team-members-group">${membersList || 'No team members'}</div></div>
     <div style="margin-top:8px;"><strong>Status:</strong> <span style="color:#2196F3;font-weight:600;">${session.status}</span></div>
   `;
 }
