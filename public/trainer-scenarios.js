@@ -74,9 +74,16 @@ function filterScenarios() {
   renderPagination();
 }
 
+// Check if we're viewing archived scenarios
+function isArchivedView() {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get('status') === 'archived';
+}
+
 // Render scenarios
 function renderScenarios() {
   const body = document.getElementById('scenariosBody');
+  const archivedView = isArchivedView();
   
   if (filteredScenarios.length === 0) {
     body.innerHTML = `
@@ -84,8 +91,8 @@ function renderScenarios() {
         <td colspan="5">
           <div class="empty-state">
             <div class="empty-icon">🔍</div>
-            <div class="empty-text">No scenarios found</div>
-            <div class="empty-subtext">Try adjusting your filters or search term</div>
+            <div class="empty-text">No ${archivedView ? 'archived' : ''} scenarios found</div>
+            <div class="empty-subtext">${archivedView ? '' : 'Try adjusting your filters or search term'}</div>
           </div>
         </td>
       </tr>
@@ -114,9 +121,23 @@ function renderScenarios() {
       ? `<span class="badge badge-template">${scenario.templateType}</span>` 
       : '<span class="badge badge-template" style="color:#94a3b8;border-color:rgba(148,163,184,0.4);background:rgba(148,163,184,0.1);">Custom</span>';
     
-    const activateBtn = scenario.status !== 'active' 
-      ? `<button class="btn-small btn-activate" onclick="markActive('${scenario._id}')">Activate</button>`
-      : '';
+    // For archived view: show Activate and Delete buttons
+    // For regular view: show Edit and Activate buttons
+    let actionButtons = '';
+    if (archivedView) {
+      actionButtons = `
+        <button class="btn-small btn-activate" onclick="markActive('${scenario._id}')">Activate</button>
+        <button class="btn-small btn-delete" onclick="deleteScenario('${scenario._id}')">Delete</button>
+      `;
+    } else {
+      const activateBtn = scenario.status !== 'active' 
+        ? `<button class="btn-small btn-activate" onclick="markActive('${scenario._id}')">Activate</button>`
+        : '';
+      actionButtons = `
+        <button class="btn-small btn-edit" onclick="editScenario('${scenario._id}')">Edit</button>
+        ${activateBtn}
+      `;
+    }
     
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -142,8 +163,7 @@ function renderScenarios() {
       </td>
       <td>
         <div class="scenario-actions">
-          <button class="btn-small btn-edit" onclick="editScenario('${scenario._id}')">Edit</button>
-          ${activateBtn}
+          ${actionButtons}
         </div>
       </td>
     `;
@@ -223,12 +243,61 @@ async function markActive(scenarioId) {
 }
 
 
+// Delete scenario
+async function deleteScenario(scenarioId) {
+  if (!confirm('Are you sure you want to delete this scenario? This action cannot be undone.')) {
+    return;
+  }
+  
+  try {
+    const res = await fetch(`/api/trainer/scenarios/${scenarioId}`, {
+      method: 'DELETE'
+    });
+    
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(err.error || `Failed to delete scenario (${res.status})`);
+      return;
+    }
+    
+    alert('Scenario deleted successfully');
+    allScenarios = await loadScenarios();
+    filterScenarios();
+  } catch (e) {
+    alert(e.message || 'Network error');
+  }
+}
+
 // Initialize
 showLoading(true);
 ensureTrainer().then(async (user) => {
   if (!user) {
     showLoading(false);
     return;
+  }
+  
+  const archivedView = isArchivedView();
+  
+  // Update page title if viewing archived
+  if (archivedView) {
+    const pageTitle = document.querySelector('.page-title');
+    if (pageTitle) {
+      pageTitle.textContent = 'Archived Scenarios';
+    }
+    const pageSubtitle = document.querySelector('.page-subtitle');
+    if (pageSubtitle) {
+      pageSubtitle.textContent = 'View and manage archived scenarios';
+    }
+    
+    // Hide filter section and create button for archived view
+    const filterSection = document.querySelector('.filter-section');
+    if (filterSection) {
+      filterSection.style.display = 'none';
+    }
+    const createBtn = document.getElementById('createScenarioBtn');
+    if (createBtn) {
+      createBtn.style.display = 'none';
+    }
   }
   
   // Update navigation links to preserve viewAs parameter
@@ -242,6 +311,13 @@ ensureTrainer().then(async (user) => {
   
   // Load scenarios
   allScenarios = await loadScenarios();
+  
+  // If archived view, filter to only archived scenarios
+  if (archivedView) {
+    currentFilter = 'archived';
+    allScenarios = allScenarios.filter(s => s.status === 'archived');
+  }
+  
   filterScenarios();
   
   // Event listeners for filters

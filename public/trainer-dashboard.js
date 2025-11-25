@@ -373,12 +373,12 @@ function navigateToSessions() {
   }
 }
 
-function navigateToAllScenarios() {
+function navigateToArchivedScenarios() {
   const viewingTrainerId = getViewingTrainerId();
   if (viewingTrainerId) {
-    location.href = `trainer-scenarios.html?viewAs=${viewingTrainerId}`;
+    location.href = `trainer-scenarios.html?viewAs=${viewingTrainerId}&status=archived`;
   } else {
-    location.href = 'trainer-scenarios.html';
+    location.href = 'trainer-scenarios.html?status=archived';
   }
 }
 
