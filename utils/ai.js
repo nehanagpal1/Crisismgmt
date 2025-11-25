@@ -237,4 +237,109 @@ function calculateSimilarity(str1, str2) {
   return union.size > 0 ? intersection.size / union.size : 0;
 }
 
-module.exports = { generateNextScenario, usingGemini };
+// Generate AI analysis for trainer session responses
+async function generateAnalysis({ scenarioTitle, scenarioDescription, responsesByRound, teamMembers }) {
+  if (!model) {
+    console.log('[AI] Fallback analysis generation - model not available');
+    return {
+      behaviouralInterpretation: {
+        emotionalTone: 'Analysis generation requires AI model configuration.',
+        cognitiveState: 'Please configure Gemini API key to generate AI analysis.',
+        behaviouralSignals: 'AI analysis unavailable.'
+      },
+      whatCouldBeBetter: 'AI analysis feature requires configuration.',
+      teamPerformance: 'AI analysis feature requires configuration.'
+    };
+  }
+
+  // Format responses for the prompt
+  let responsesText = '';
+  Object.keys(responsesByRound).sort((a, b) => Number(a) - Number(b)).forEach(roundNum => {
+    const roundData = responsesByRound[roundNum];
+    responsesText += `\n\nROUND ${roundNum}:\n`;
+    responsesText += `Scenario Situation: ${roundData.scenario}\n`;
+    responsesText += `Team Responses:\n`;
+    roundData.responses.forEach(resp => {
+      const displayName = resp.customName || resp.user;
+      responsesText += `  - ${displayName}: ${resp.response || 'No response'}\n`;
+    });
+  });
+
+  const teamMembersList = teamMembers.map(tm => {
+    const username = tm.userId?.username || 'Unknown';
+    const customName = tm.customName ? ` (${tm.customName})` : '';
+    return `${username}${customName}`;
+  }).join(', ');
+
+  const prompt = `You are an expert behavioral analyst and crisis management trainer. Analyze the team's responses from a crisis management training session and provide comprehensive analysis.
+
+SCENARIO: ${scenarioTitle}
+${scenarioDescription ? `DESCRIPTION: ${scenarioDescription}` : ''}
+
+TEAM MEMBERS: ${teamMembersList}
+
+TEAM RESPONSES BY ROUND:${responsesText}
+
+Your task is to provide a detailed analysis in the following format. Be specific, professional, and constructive. Focus on observable behaviors, decision-making patterns, and team dynamics.
+
+Provide your analysis as a JSON object with these exact fields:
+{
+  "emotionalTone": "Detailed analysis of the emotional tone observed across all rounds...",
+  "cognitiveState": "Assessment of cognitive state and decision-making processes...",
+  "behaviouralSignals": "Key behavioral signals and patterns observed...",
+  "whatCouldBeBetter": "Specific areas for improvement and alternative approaches...",
+  "teamPerformance": "Evaluation of overall team performance and individual contributions..."
+}
+
+IMPORTANT:
+- Each field should be 2-4 paragraphs (150-300 words)
+- Be specific and reference actual responses when relevant
+- Provide constructive feedback
+- Focus on both individual and team dynamics
+- Return ONLY valid JSON, no additional text before or after`;
+
+  try {
+    console.log('[AI] Calling Google Gemini API for analysis generation...');
+    
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text().trim();
+    
+    console.log('[AI] Gemini API SUCCESS - Generated analysis');
+    
+    // Try to extract JSON from the response
+    let jsonText = text;
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      jsonText = jsonMatch[0];
+    }
+    
+    const analysis = JSON.parse(jsonText);
+    
+    // Ensure all required fields exist
+    return {
+      behaviouralInterpretation: {
+        emotionalTone: analysis.emotionalTone || 'Analysis of emotional tone based on team responses.',
+        cognitiveState: analysis.cognitiveState || 'Assessment of cognitive state and decision-making.',
+        behaviouralSignals: analysis.behaviouralSignals || 'Key behavioral signals observed during the session.'
+      },
+      whatCouldBeBetter: analysis.whatCouldBeBetter || 'Areas for improvement identified from the session.',
+      teamPerformance: analysis.teamPerformance || 'Overall team performance evaluation.'
+    };
+  } catch (e) {
+    console.error('[AI] ❌ Gemini API ERROR for analysis:', e?.message || e);
+    
+    // Return fallback analysis
+    return {
+      behaviouralInterpretation: {
+        emotionalTone: 'Unable to generate AI analysis. Please review the team responses manually and provide your assessment of the emotional tone observed throughout the session.',
+        cognitiveState: 'Unable to generate AI analysis. Please assess the cognitive state and decision-making processes based on the team\'s responses.',
+        behaviouralSignals: 'Unable to generate AI analysis. Please identify key behavioral signals and patterns from the session responses.'
+      },
+      whatCouldBeBetter: 'Unable to generate AI analysis. Please identify specific areas where the team could improve their crisis management approach.',
+      teamPerformance: 'Unable to generate AI analysis. Please evaluate the overall team performance and individual contributions based on the responses provided.'
+    };
+  }
+}
+
+module.exports = { generateNextScenario, generateAnalysis, usingGemini };

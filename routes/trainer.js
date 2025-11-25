@@ -4,6 +4,7 @@ const Scenario = require('../models/Scenario');
 const PlaySession = require('../models/Session');
 const SessionResponse = require('../models/Response');
 const User = require('../models/User');
+const { generateAnalysis } = require('../utils/ai');
 
 function requireLogin(req, res, next) { if (!req.session.user) return res.status(401).json({ error: 'Unauthorized' }); next(); }
 function requireTrainerOrAdmin(req, res, next) { if (req.session.role === 'trainer' || req.session.role === 'admin') return next(); return res.status(403).json({ error: 'Forbidden' }); }
@@ -312,6 +313,56 @@ router.get('/api/trainer/sessions/:id', requireLogin, requireTrainerOrAdmin, asy
     res.json(session);
   } catch (err) {
     console.error('Get session for analysis error:', err);
+    res.status(500).json({ error: err.message || 'Server error' });
+  }
+});
+
+// Generate AI analysis for session
+router.post('/api/trainer/sessions/:id/generate-analysis', requireLogin, requireTrainerOrAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const session = await PlaySession.findOne({ _id: id, trainerId: req.session.userId })
+      .populate('scenarioId', 'title description')
+      .populate('teamMembers.userId', 'username');
+    
+    if (!session) return res.status(404).json({ error: 'Not found' });
+    
+    // Get all responses for this session
+    const responses = await SessionResponse.find({ 
+      sessionId: id,
+      userResponse: { $exists: true, $ne: '' },
+      customName: { $ne: 'SCENARIO_PLACEHOLDER' }
+    })
+    .populate('userId', 'username')
+    .sort({ roundNumber: 1, createdAt: 1 });
+    
+    // Group responses by round
+    const responsesByRound = {};
+    responses.forEach(r => {
+      if (!responsesByRound[r.roundNumber]) {
+        responsesByRound[r.roundNumber] = {
+          scenario: r.scenarioText,
+          responses: []
+        };
+      }
+      responsesByRound[r.roundNumber].responses.push({
+        user: r.userId?.username || 'Unknown',
+        customName: r.customName || '',
+        response: r.userResponse
+      });
+    });
+    
+    // Generate AI analysis
+    const analysis = await generateAnalysis({
+      scenarioTitle: session.scenarioId?.title || 'Untitled Scenario',
+      scenarioDescription: session.scenarioId?.description || '',
+      responsesByRound: responsesByRound,
+      teamMembers: session.teamMembers || []
+    });
+    
+    res.json(analysis);
+  } catch (err) {
+    console.error('Generate AI analysis error:', err);
     res.status(500).json({ error: err.message || 'Server error' });
   }
 });

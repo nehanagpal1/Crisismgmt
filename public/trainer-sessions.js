@@ -217,9 +217,5 @@ ensureTrainer().then(() => {
     }
   }
   
-  document.getElementById('refreshBtn').addEventListener('click', () => {
-    sessionsPage = 1; // Reset to first page
-    render().then(() => showLoading(false)).catch(() => showLoading(false));
-  });
   render().then(() => showLoading(false)).catch(() => showLoading(false));
 }).catch(() => showLoading(false));
