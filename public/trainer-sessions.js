@@ -58,7 +58,7 @@ function rowActions(s){
   // Archive only on active/rejected/completed
   let allowArchive = ['active','rejected','completed'].includes(s.status);
   let viewRespBtn = `<button data-act="responses" data-id="${s._id}" class="btn-info" style="width:auto;font-size:12px;padding:8px 14px;">Response and Analysis</button>`;
-  let archiveBtn = allowArchive ? `<button data-act="set" data-status="archived" data-id="${s._id}" class="btn-secondary" style="width:auto;font-size:12px;padding:8px 14px;">Archive</button>` : '';
+  let archiveBtn = allowArchive ? `<button data-act="set" data-status="archived" data-id="${s._id}" class="btn-archive" style="width:auto;font-size:12px;padding:8px 14px;">Archive</button>` : '';
   return (archiveBtn + viewRespBtn);
 }
 
