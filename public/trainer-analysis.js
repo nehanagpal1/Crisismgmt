@@ -64,22 +64,21 @@ async function loadResponses() {
   Object.keys(responsesByRound).sort((a, b) => Number(a) - Number(b)).forEach(roundNum => {
     const roundData = responsesByRound[roundNum];
     const roundDiv = document.createElement('div');
-    roundDiv.style.cssText = 'border:1px solid #ddd;border-radius:8px;padding:16px;margin-bottom:16px;background:#fafbff;';
+    roundDiv.className = 'round-block';
     
-    let html = `<h3 style="color:#2196F3;margin:0 0 12px 0;">Round ${roundNum}</h3>`;
-    html += `<div style="background:#fff;padding:12px;border-radius:4px;margin-bottom:12px;border-left:4px solid #2196F3;">
+    let html = `<div class="round-title">Round ${roundNum}</div>`;
+    html += `<div class="scenario-text">
       <strong>Scenario:</strong><br>${roundData.scenario}
     </div>`;
     
-    html += '<div><strong>Team Responses:</strong></div>';
-    roundData.responses.forEach((resp, idx) => {
-      const displayName = resp.customName || resp.user;
-      const badge = resp.customName ? `<span style="background:#4CAF50;color:white;padding:2px 8px;border-radius:12px;font-size:12px;margin-left:8px;">${resp.customName}</span>` : '';
-      html += `<div style="background:#fff;padding:12px;margin:8px 0;border-radius:4px;border-left:3px solid #4CAF50;">
-        <div style="font-weight:600;color:#333;margin-bottom:4px;">
+    html += '<div class="responses-heading">Team Responses</div>';
+    roundData.responses.forEach((resp) => {
+      const badge = resp.customName ? `<span class="response-badge">${resp.customName}</span>` : '';
+      html += `<div class="response-item">
+        <div class="response-user">
           ${resp.user}${badge}
         </div>
-        <div style="color:#555;">${resp.response || '<em>No response</em>'}</div>
+        <div class="response-text">${resp.response || '<em>No response</em>'}</div>
       </div>`;
     });
     
