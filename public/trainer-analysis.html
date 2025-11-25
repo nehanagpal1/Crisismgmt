@@ -289,6 +289,17 @@
       border-color: #475569;
     }
     
+    .ai-action-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 24px 0 32px 0;
+    }
+    
+    .ai-action-bar .btn-ai {
+      width: fit-content;
+    }
+    
     .btn-ai {
       background: rgba(59, 130, 246, 0.15);
       border: 1px solid rgba(59, 130, 246, 0.4);
@@ -357,6 +368,13 @@
       <!-- Responses will be displayed grouped by round with team member names -->
     </div>
     
+    <div class="ai-action-bar">
+      <button type="button" id="generateAiBtn" class="btn-ai">
+        <span>✨</span> Generate AI Analysis
+      </button>
+      <div class="ai-hint">AI-generated text can be edited before submission.</div>
+    </div>
+    
     <h2>Analysis</h2>
     <form id="analysisForm">
       <div class="analysis-section">
@@ -386,13 +404,9 @@
       </div>
       
       <div class="form-actions">
-        <button type="button" id="generateAiBtn" class="btn-ai">
-          <span>✨</span> Generate AI Analysis
-        </button>
         <button type="button" id="completeBtn" class="btn-success">Submit Analysis & Mark Complete</button>
         <button type="button" id="backBtn" class="btn-secondary">Back</button>
       </div>
-      <div class="ai-hint">AI-generated text can be edited before submission.</div>
       
       <div id="feedbackMsg"></div>
     </form>
