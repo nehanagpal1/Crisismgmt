@@ -33,33 +33,52 @@ ensureTrainer().then(() => {
   });
 });
 
-document.getElementById('createScenarioForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const form = e.currentTarget;
-  const formData = new FormData(form);
-  const payload = Object.fromEntries(formData.entries());
-  payload.numRounds = Number(payload.numRounds || 5);
-  payload.responseTimerSec = Number(payload.responseTimerSec || 120);
-  try {
-    const res = await fetch('/api/trainer/scenarios', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      alert(data.error || `Failed (${res.status}) to create scenario`);
-      return;
+// 1. Track which button was used
+let saveAsDraft = false;
+
+// 2. Attach event to Save as Draft
+const saveDraftBtn = document.getElementById('saveDraftBtn');
+if (saveDraftBtn) {
+  saveDraftBtn.addEventListener('click', () => {
+    saveAsDraft = true;
+    document.getElementById('createScenarioForm').dispatchEvent(new Event('submit', { cancelable: true }));
+  });
+}
+
+// Update main submit listener
+const scenarioForm = document.getElementById('createScenarioForm');
+if (scenarioForm) {
+  scenarioForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+    payload.numRounds = Number(payload.numRounds || 5);
+    payload.responseTimerSec = Number(payload.responseTimerSec || 120);
+    payload.active = !saveAsDraft; // true if Create, false if Draft
+    try {
+      const res = await fetch('/api/trainer/scenarios', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || `Failed (${res.status}) to create scenario`);
+        saveAsDraft = false;
+        return;
+      }
+
+      // Preserve viewAs parameter when redirecting
+      const viewingTrainerId = getViewingTrainerId();
+      if (viewingTrainerId) {
+        location.href = `trainer-dashboard.html?viewAs=${viewingTrainerId}`;
+      } else {
+        location.href = 'trainer-dashboard.html';
+      }
+    } catch (err) {
+      alert(err.message || 'Network error');
     }
-    
-    // Preserve viewAs parameter when redirecting
-    const viewingTrainerId = getViewingTrainerId();
-    if (viewingTrainerId) {
-      location.href = `trainer-dashboard.html?viewAs=${viewingTrainerId}`;
-    } else {
-      location.href = 'trainer-dashboard.html';
-    }
-  } catch (err) {
-    alert(err.message || 'Network error');
-  }
-});
+    saveAsDraft = false;
+  });
+}

@@ -49,13 +49,23 @@ router.get('/api/trainer/scenarios/:id', requireLogin, requireTrainerOrAdmin, as
 // Create scenario
 router.post('/api/trainer/scenarios', requireLogin, requireTrainerOrAdmin, async (req, res) => {
   try {
-    const { title, description, initialText, status, templateType, numRounds, responseTimerSec } = req.body;
+    const { title, description, initialText, status, active, templateType, numRounds, responseTimerSec } = req.body;
     if (!title || !initialText) return res.status(400).json({ error: 'title and initialText are required' });
+    
+    // Handle both 'status' and 'active' field for backward compatibility
+    // If 'active' is provided (boolean), convert to status: 'active' or 'draft'
+    let scenarioStatus = status;
+    if (active !== undefined) {
+      scenarioStatus = active ? 'active' : 'draft';
+    } else {
+      scenarioStatus = status || 'draft';
+    }
+    
     const doc = await Scenario.create({
       title,
       description: description || '',
       initialText,
-      status: status || 'draft',
+      status: scenarioStatus,
       templateType: templateType || 'custom',
       numRounds: Number(numRounds) || 5,
       responseTimerSec: Number(responseTimerSec) || 120,
