@@ -148,12 +148,11 @@ function renderActiveSessions(sessions) {
           <div class="participants-info">${teamInfo}</div>
         </div>
         <div class="session-actions">
-          <span class="badge-live">Live</span>
           <button class="btn-monitor" onclick="location.href='${monitorUrl}'">
             Monitor Session
           </button>
           <button class="btn-archive-session" onclick="archiveSession('${session._id}')">
-            Archive Session
+            Archive
           </button>
         </div>
       </div>

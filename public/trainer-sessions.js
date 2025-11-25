@@ -1,6 +1,6 @@
-let currentUserId = null;
-let allUsers = [];
-let teamMemberCount = 0;
+// Pagination state
+let sessionsPage = 1;
+const itemsPerPage = 10; // Show 10 sessions per page
 
 // Helper to show/hide loading
 function showLoading(show = true) {
@@ -27,83 +27,6 @@ async function ensureTrainer() {
   return data;
 }
 
-function updateTeamCountMsg() {
-  const msg = document.getElementById('teamCountMsg');
-  const addBtn = document.getElementById('addTeamMemberBtn');
-  msg.textContent = `${teamMemberCount} / 5 members`;
-  addBtn.disabled = teamMemberCount >= 5;
-  if (teamMemberCount >= 5) {
-    msg.style.color = '#f59e0b';
-    addBtn.style.opacity = '0.5';
-    addBtn.style.cursor = 'not-allowed';
-  } else {
-    msg.style.color = '#64748b';
-    addBtn.style.opacity = '1';
-    addBtn.style.cursor = 'pointer';
-  }
-}
-
-function createTeamMemberRow(index) {
-  const row = document.createElement('div');
-  row.className = 'team-member-row';
-  row.setAttribute('data-index', index);
-  
-  const userSelect = document.createElement('select');
-  userSelect.className = 'user-select';
-  
-  const nameInput = document.createElement('input');
-  nameInput.type = 'text';
-  nameInput.className = 'custom-name';
-  nameInput.placeholder = 'e.g., Team Leader, Coordinator...';
-  
-  const removeBtn = document.createElement('button');
-  removeBtn.type = 'button';
-  removeBtn.textContent = '×';
-  removeBtn.title = 'Remove member';
-  removeBtn.onclick = () => removeTeamMember(row);
-  
-  row.appendChild(userSelect);
-  row.appendChild(nameInput);
-  row.appendChild(removeBtn);
-  
-  // Populate user dropdown
-  fillSelect(userSelect, allUsers);
-  
-  return row;
-}
-
-function addTeamMember() {
-  if (teamMemberCount >= 5) {
-    alert('Maximum 5 team members allowed');
-    return;
-  }
-  const container = document.getElementById('teamMembersContainer');
-  const row = createTeamMemberRow(teamMemberCount);
-  container.appendChild(row);
-  teamMemberCount++;
-  updateTeamCountMsg();
-}
-
-function removeTeamMember(row) {
-  row.remove();
-  teamMemberCount--;
-  // Re-index remaining rows
-  document.querySelectorAll('.team-member-row').forEach((r, idx) => {
-    r.setAttribute('data-index', idx);
-    const label = r.querySelector('label');
-    if (label) label.childNodes[0].textContent = `User ${idx + 1}: `;
-  });
-  updateTeamCountMsg();
-}
-
-async function loadScenarios() { 
-  const viewingTrainerId = getViewingTrainerId();
-  let url = '/api/trainer/scenarios';
-  if (viewingTrainerId) url = `/api/admin/trainer/${viewingTrainerId}/scenarios`;
-  const res = await fetch(url); 
-  return await res.json(); 
-}
-async function loadUsers() { const res = await fetch('/api/trainer/users'); return await res.json(); }
 async function loadSessions() { 
   const viewingTrainerId = getViewingTrainerId();
   let url = '/api/trainer/sessions';
@@ -112,11 +35,6 @@ async function loadSessions() {
   return await res.json(); 
 }
 
-function fillSelect(select, items) {
-  select.innerHTML = '';
-  if (!items || items.length === 0) { const o=document.createElement('option'); o.disabled=true;o.selected=true;o.textContent='No users found. Create a user and refresh'; select.appendChild(o); return; }
-  items.forEach(it => { const o=document.createElement('option'); o.value=it._id; o.textContent=`${it.username || it.title}${it.role? ' ['+it.role+']':''}`; select.appendChild(o); });
-}
 
 function statusDropdown(s) {
   // Map status to user-friendly and allowed next options
@@ -145,30 +63,22 @@ function rowActions(s){
 }
 
 async function render() {
-  const [scenarios, users, sessions] = await Promise.all([loadScenarios(), loadUsers(), loadSessions()]);
-  allUsers = users; // Store for dynamic team member creation
+  const sessions = await loadSessions();
   
-  // Populate scenario dropdown
-  const scenarioSel = document.getElementById('scenarioSelect');
-  scenarioSel.innerHTML = '<option value="">Choose a scenario...</option>';
-  scenarios.forEach(s => {
-    const o = document.createElement('option');
-    o.value = s._id;
-    o.textContent = s.title;
-    scenarioSel.appendChild(o);
-  });
-  
-  // Initialize with one team member
-  const container = document.getElementById('teamMembersContainer');
-  container.innerHTML = '';
-  teamMemberCount = 0;
-  addTeamMember(); // Start with 1 member
+  // Store globally for pagination
+  window.allSessions = sessions;
 
   // Update session count
   const sessionCount = document.getElementById('sessionCount');
   if (sessionCount) {
     sessionCount.textContent = `${sessions.length} session${sessions.length !== 1 ? 's' : ''}`;
   }
+
+  // Calculate pagination
+  const totalPages = Math.ceil(sessions.length / itemsPerPage);
+  const startIndex = (sessionsPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const pageSessions = sessions.slice(startIndex, endIndex);
 
   const tbody = document.getElementById('sessionsBody');
   tbody.innerHTML = '';
@@ -179,16 +89,17 @@ async function render() {
         <td colspan="4">
           <div class="empty-state">
             <div class="empty-icon">📋</div>
-            <div class="empty-text">No sessions created yet</div>
-            <div class="empty-subtext">Create your first session above to get started</div>
+            <div class="empty-text">No sessions found</div>
+            <div class="empty-subtext">Create a new session from the dashboard to get started</div>
           </div>
         </td>
       </tr>
     `;
+    renderPagination(0, 0);
     return;
   }
   
-  sessions.forEach(s => {
+  pageSessions.forEach(s => {
     const tr = document.createElement('tr');
     // Display team members or legacy single user
     let teamDisplay = '';
@@ -204,6 +115,9 @@ async function render() {
     tr.innerHTML = `<td>${s.scenarioId?.title || ''}</td><td>${teamDisplay}</td><td>${statusDropdown(s)}</td><td>${rowActions(s)}</td>`;
     tbody.appendChild(tr);
   });
+  
+  // Render pagination
+  renderPagination(totalPages, sessions.length);
 
   tbody.querySelectorAll('button[data-act="set"]').forEach(btn => {
     btn.addEventListener('click', async () => {
@@ -253,62 +167,38 @@ async function render() {
   });
 }
 
-async function createSession() {
-  const scenarioId = document.getElementById('scenarioSelect').value;
-  if (!scenarioId) {
-    alert('Please select a scenario');
+// Render pagination
+function renderPagination(totalPages, totalItems) {
+  const paginationContainer = document.getElementById('sessionsPagination');
+  if (!paginationContainer) return;
+  
+  if (totalPages <= 1) {
+    paginationContainer.innerHTML = '';
     return;
   }
   
-  // Collect team members
-  const teamMembers = [];
-  const rows = document.querySelectorAll('.team-member-row');
-  rows.forEach(row => {
-    const userSelect = row.querySelector('.user-select');
-    const customNameInput = row.querySelector('.custom-name');
-    if (userSelect && userSelect.value) {
-      teamMembers.push({
-        userId: userSelect.value,
-        customName: customNameInput ? customNameInput.value.trim() : ''
-      });
-    }
-  });
+  paginationContainer.innerHTML = `
+    <div class="pagination">
+      <button class="pagination-btn" id="sessionsPrevBtn" ${sessionsPage === 1 ? 'disabled' : ''} onclick="navigateSessionsPage('prev')">← Prev</button>
+      <span class="pagination-info">Page ${sessionsPage} of ${totalPages} (${totalItems} total)</span>
+      <button class="pagination-btn" id="sessionsNextBtn" ${sessionsPage === totalPages ? 'disabled' : ''} onclick="navigateSessionsPage('next')">Next →</button>
+    </div>
+  `;
+}
+
+// Navigation functions for pagination
+function navigateSessionsPage(direction) {
+  const sessions = window.allSessions || [];
+  const totalPages = Math.ceil(sessions.length / itemsPerPage);
   
-  if (teamMembers.length === 0) {
-    alert('Please add at least 1 team member');
-    return;
-  }
-  
-  if (teamMembers.length > 5) {
-    alert('Maximum 5 team members allowed');
-    return;
-  }
-  
-  // Check for duplicate users
-  const userIds = teamMembers.map(tm => tm.userId);
-  const uniqueUserIds = new Set(userIds);
-  if (uniqueUserIds.size !== userIds.length) {
-    alert('Cannot assign the same user multiple times. Please select different users.');
-    return;
-  }
-  
-  try {
-    const res = await fetch('/api/trainer/sessions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ scenarioId, teamMembers, status: 'active' })
-    });
-    
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      alert(err.error || `Failed to create session (${res.status})`);
-      return;
-    }
-    
-    alert(`Team session created successfully with ${teamMembers.length} member(s)!`);
+  if (direction === 'prev' && sessionsPage > 1) {
+    sessionsPage--;
     render();
-  } catch (e) {
-    alert(e.message || 'Network error');
+    window.scrollTo({ top: document.getElementById('sessionsTable').offsetTop - 100, behavior: 'smooth' });
+  } else if (direction === 'next' && sessionsPage < totalPages) {
+    sessionsPage++;
+    render();
+    window.scrollTo({ top: document.getElementById('sessionsTable').offsetTop - 100, behavior: 'smooth' });
   }
 }
 
@@ -327,8 +217,9 @@ ensureTrainer().then(() => {
     }
   }
   
-  document.getElementById('createSessionBtn').addEventListener('click', createSession); 
-  document.getElementById('refreshBtn').addEventListener('click', render); 
-  document.getElementById('addTeamMemberBtn').addEventListener('click', addTeamMember);
+  document.getElementById('refreshBtn').addEventListener('click', () => {
+    sessionsPage = 1; // Reset to first page
+    render().then(() => showLoading(false)).catch(() => showLoading(false));
+  });
   render().then(() => showLoading(false)).catch(() => showLoading(false));
 }).catch(() => showLoading(false));
