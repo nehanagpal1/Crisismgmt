@@ -33,10 +33,12 @@ async function loadScenarios() {
   return scenarios.filter(s => s.status === 'active');
 }
 
-// Load users
+// Load users (only users with role 'user')
 async function loadUsers() {
   const res = await fetch('/api/trainer/users');
-  return await res.json();
+  const users = await res.json();
+  // Filter to only show users with role 'user'
+  return users.filter(u => u.role === 'user');
 }
 
 // Update team count message
