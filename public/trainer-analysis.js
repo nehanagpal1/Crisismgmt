@@ -70,12 +70,12 @@ async function loadResponses() {
     let html = `
       <div class="round-header">
         <div class="round-title">Round ${roundNum}</div>
-        <button type="button" class="round-toggle" data-target="${contentId}" aria-expanded="true">
-          <span class="toggle-icon">−</span>
-          <span class="toggle-text">Collapse</span>
+        <button type="button" class="round-toggle" data-target="${contentId}" aria-expanded="false">
+          <span class="toggle-icon">+</span>
+          <span class="toggle-text">Expand</span>
         </button>
       </div>
-      <div id="${contentId}" class="round-content">
+      <div id="${contentId}" class="round-content collapsed">
         <div class="scenario-text">
           <strong>Scenario:</strong><br>${roundData.scenario}
         </div>
