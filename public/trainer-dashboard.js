@@ -1,3 +1,8 @@
+// Pagination state
+let sessionsPage = 1;
+let scenariosPage = 1;
+const itemsPerPage = 5; // Show 5 items per page for both
+
 // Check if admin is viewing as a trainer
 function getViewingTrainerId() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -81,15 +86,19 @@ async function archiveSession(sessionId) {
     }
     
     alert('Session archived successfully');
+    // Reset pagination and reload
+    sessionsPage = 1;
     location.reload();
   } catch (e) {
     alert(e.message || 'Network error');
   }
 }
 
-// Render active sessions
+// Render active sessions with pagination
 function renderActiveSessions(sessions) {
   const container = document.getElementById('activeSessionsList');
+  const paginationContainer = document.getElementById('sessionsPagination');
+  
   // Filter to show only active sessions
   const activeSessions = sessions.filter(s => s.status === 'active');
   
@@ -100,11 +109,18 @@ function renderActiveSessions(sessions) {
         <div class="empty-state-text">No active sessions running</div>
       </div>
     `;
+    if (paginationContainer) paginationContainer.innerHTML = '';
     return;
   }
   
+  // Calculate pagination
+  const totalPages = Math.ceil(activeSessions.length / itemsPerPage);
+  const startIndex = (sessionsPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const pageSessions = activeSessions.slice(startIndex, endIndex);
+  
   container.innerHTML = '';
-  activeSessions.forEach(session => {
+  pageSessions.forEach(session => {
     const card = document.createElement('div');
     card.className = 'session-card-modern';
     
@@ -145,11 +161,36 @@ function renderActiveSessions(sessions) {
     
     container.appendChild(card);
   });
+  
+  // Render pagination
+  if (paginationContainer) {
+    renderSessionsPagination(totalPages, activeSessions.length);
+  }
 }
 
-// Render scenarios
+// Render sessions pagination
+function renderSessionsPagination(totalPages, totalItems) {
+  const paginationContainer = document.getElementById('sessionsPagination');
+  if (!paginationContainer) return;
+  
+  if (totalPages <= 1) {
+    paginationContainer.innerHTML = '';
+    return;
+  }
+  
+  paginationContainer.innerHTML = `
+    <div class="pagination">
+      <button class="pagination-btn" id="sessionsPrevBtn" ${sessionsPage === 1 ? 'disabled' : ''} onclick="navigateSessionsPage('prev')">← Prev</button>
+      <span class="pagination-info">Page ${sessionsPage} of ${totalPages} (${totalItems} total)</span>
+      <button class="pagination-btn" id="sessionsNextBtn" ${sessionsPage === totalPages ? 'disabled' : ''} onclick="navigateSessionsPage('next')">Next →</button>
+    </div>
+  `;
+}
+
+// Render scenarios with pagination
 function renderScenarios(scenarios) {
   const container = document.getElementById('scenarioList');
+  const paginationContainer = document.getElementById('scenariosPagination');
   const viewingTrainerId = getViewingTrainerId();
   
   // Filter to show only draft and active scenarios
@@ -162,11 +203,18 @@ function renderScenarios(scenarios) {
         <div class="empty-state-text">No scenarios created yet</div>
       </div>
     `;
+    if (paginationContainer) paginationContainer.innerHTML = '';
     return;
   }
   
+  // Calculate pagination
+  const totalPages = Math.ceil(visibleScenarios.length / itemsPerPage);
+  const startIndex = (scenariosPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const pageScenarios = visibleScenarios.slice(startIndex, endIndex);
+  
   container.innerHTML = '';
-  visibleScenarios.forEach(scenario => {
+  pageScenarios.forEach(scenario => {
     const card = document.createElement('div');
     card.className = 'scenario-card-modern';
     
@@ -215,6 +263,30 @@ function renderScenarios(scenarios) {
     
     container.appendChild(card);
   });
+  
+  // Render pagination
+  if (paginationContainer) {
+    renderScenariosPagination(totalPages, visibleScenarios.length);
+  }
+}
+
+// Render scenarios pagination
+function renderScenariosPagination(totalPages, totalItems) {
+  const paginationContainer = document.getElementById('scenariosPagination');
+  if (!paginationContainer) return;
+  
+  if (totalPages <= 1) {
+    paginationContainer.innerHTML = '';
+    return;
+  }
+  
+  paginationContainer.innerHTML = `
+    <div class="pagination">
+      <button class="pagination-btn" id="scenariosPrevBtn" ${scenariosPage === 1 ? 'disabled' : ''} onclick="navigateScenariosPage('prev')">← Prev</button>
+      <span class="pagination-info">Page ${scenariosPage} of ${totalPages} (${totalItems} total)</span>
+      <button class="pagination-btn" id="scenariosNextBtn" ${scenariosPage === totalPages ? 'disabled' : ''} onclick="navigateScenariosPage('next')">Next →</button>
+    </div>
+  `;
 }
 
 // Activate scenario (from draft to active)
@@ -259,6 +331,8 @@ async function activateScenario(scenarioId) {
     }
     
     alert('Scenario activated successfully');
+    // Reset pagination and reload
+    scenariosPage = 1;
     location.reload();
   } catch (e) {
     alert(e.message || 'Network error');
@@ -307,6 +381,8 @@ async function archiveScenario(scenarioId) {
     }
     
     alert('Scenario archived successfully');
+    // Reset pagination and reload
+    scenariosPage = 1;
     location.reload();
   } catch (e) {
     alert(e.message || 'Network error');
@@ -376,6 +452,10 @@ ensureTrainer().then(async (user) => {
     loadSessions()
   ]);
   
+  // Store globally for pagination
+  window.allScenarios = scenarios;
+  window.allSessions = sessions;
+  
   // Calculate and render stats
   const stats = calculateStats(scenarios, sessions);
   renderStats(stats);
@@ -421,6 +501,39 @@ document.getElementById('createScenarioBtn').addEventListener('click', () => {
     location.href = 'trainer-create-scenario.html';
   }
 });
+
+// Navigation functions for pagination
+function navigateSessionsPage(direction) {
+  const sessions = window.allSessions || [];
+  const activeSessions = sessions.filter(s => s.status === 'active');
+  const totalPages = Math.ceil(activeSessions.length / itemsPerPage);
+  
+  if (direction === 'prev' && sessionsPage > 1) {
+    sessionsPage--;
+    renderActiveSessions(sessions);
+    window.scrollTo({ top: document.getElementById('activeSessionsList').offsetTop - 100, behavior: 'smooth' });
+  } else if (direction === 'next' && sessionsPage < totalPages) {
+    sessionsPage++;
+    renderActiveSessions(sessions);
+    window.scrollTo({ top: document.getElementById('activeSessionsList').offsetTop - 100, behavior: 'smooth' });
+  }
+}
+
+function navigateScenariosPage(direction) {
+  const scenarios = window.allScenarios || [];
+  const visibleScenarios = scenarios.filter(s => s.status === 'draft' || s.status === 'active');
+  const totalPages = Math.ceil(visibleScenarios.length / itemsPerPage);
+  
+  if (direction === 'prev' && scenariosPage > 1) {
+    scenariosPage--;
+    renderScenarios(scenarios);
+    window.scrollTo({ top: document.getElementById('scenarioList').offsetTop - 100, behavior: 'smooth' });
+  } else if (direction === 'next' && scenariosPage < totalPages) {
+    scenariosPage++;
+    renderScenarios(scenarios);
+    window.scrollTo({ top: document.getElementById('scenarioList').offsetTop - 100, behavior: 'smooth' });
+  }
+}
 
 // Logout
 document.getElementById('logoutForm').addEventListener('submit', async (e) => {
