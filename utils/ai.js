@@ -7,10 +7,12 @@ const usingGemini = !!GEMINI_API_KEY;
 let genAI = null;
 let model = null;
 
+const MODEL_ID = 'models/gemini-1.5-flash-latest';
+
 if (usingGemini) {
   genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-  model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' }); // Use stable latest model
-  console.log('[AI] Google Gemini client initialized with gemini-1.5-flash-latest');
+  model = genAI.getGenerativeModel({ model: MODEL_ID });
+  console.log(`[AI] Google Gemini client initialized with ${MODEL_ID}`);
 } else {
   console.log('[AI] GEMINI_API_KEY not set - using fallback generator');
 }
