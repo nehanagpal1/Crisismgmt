@@ -42,6 +42,67 @@ router.get('/api/user/my-sessions', requireLogin, async (req, res) => {
     }
 });
 
+// Participant-facing session detail including analysis
+router.get('/api/user/sessions/:id/detail', requireLogin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const session = await PlaySession.findOne({
+            _id: id,
+            'teamMembers.userId': req.session.userId
+        })
+        .populate('scenarioId', 'title description')
+        .populate('teamMembers.userId', 'username');
+
+        if (!session) return res.status(404).json({ error: 'Session not found' });
+
+        res.json({
+            sessionId: session._id,
+            scenario: {
+                title: session.scenarioId?.title || 'Untitled Scenario',
+                description: session.scenarioId?.description || ''
+            },
+            status: session.status,
+            completedAt: session.completedAt,
+            teamMembers: session.teamMembers.map(tm => ({
+                username: tm.userId?.username || 'Participant',
+                customName: tm.customName || '',
+                userId: tm.userId?._id
+            })),
+            behaviouralInterpretation: session.behaviouralInterpretation || {},
+            whatCouldBeBetter: session.whatCouldBeBetter || '',
+            teamPerformance: session.teamPerformance || ''
+        });
+    } catch (err) {
+        console.error('User session detail error:', err);
+        res.status(500).json({ error: err.message || 'Server error' });
+    }
+});
+
+// Participant view of session responses
+router.get('/api/user/sessions/:id/responses', requireLogin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const session = await PlaySession.findOne({
+            _id: id,
+            'teamMembers.userId': req.session.userId
+        });
+        if (!session) return res.status(404).json({ error: 'Session not found' });
+
+        const responses = await SessionResponse.find({
+            sessionId: id,
+            userResponse: { $exists: true, $ne: '' },
+            customName: { $ne: 'SCENARIO_PLACEHOLDER' }
+        })
+        .populate('userId', 'username')
+        .sort({ roundNumber: 1, createdAt: 1 });
+
+        res.json(responses);
+    } catch (err) {
+        console.error('User session responses error:', err);
+        res.status(500).json({ error: err.message || 'Server error' });
+    }
+});
+
 // Handle team session submission - collects all 5 users' responses
 async function handleTeamSubmission(req, res, session, roundNumber, prevScenario, userResponse) {
     try {

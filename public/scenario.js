@@ -251,11 +251,6 @@ async function logout() {
     location.href = '/';
 }
 
-document.getElementById('logoutForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    logout();
-});
-
 // Initialize
 showLoading(true);
 fetchUserInfo().then(async () => {

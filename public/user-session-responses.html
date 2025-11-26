@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Session Responses</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #0f1419; color: #e2e8f0; }
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 32px 60px;
+      min-height: 100vh;
+      background: #0f1419;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 600;
+      margin: 0;
+    }
+    .nav-link {
+      color: #3b82f6;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 8px 16px;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-link:hover { background: #1e293b; border-color: #3b82f6; }
+    #info {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    h2 { font-size: 20px; font-weight: 600; margin: 32px 0 16px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th {
+      padding: 14px 16px;
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #2d3748;
+    }
+    td {
+      padding: 16px;
+      font-size: 13px;
+      color: #e2e8f0;
+      border-bottom: 1px solid #2d3748;
+      vertical-align: top;
+    }
+    table tbody tr:last-child td { border-bottom: none; }
+    #analysisSection {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    #analysisSection h3 { color: #3b82f6; margin-top: 0; }
+    #analysisSection p { color: #94a3b8; line-height: 1.6; }
+    .analysis-empty {
+      text-align: center;
+      padding: 32px 0;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading responses...</div>
+  </div>
+
+  <div class="dashboard-container">
+    <div class="page-header">
+      <h1>Session Responses</h1>
+      <a href="/user-dashboard.html" class="nav-link"><span>←</span> Back to Dashboard</a>
+    </div>
+
+    <div id="info">Loading session info...</div>
+
+    <h2>Team Responses</h2>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:80px;">Round</th>
+          <th style="width:40%;">Scenario</th>
+          <th>Response</th>
+        </tr>
+      </thead>
+      <tbody id="respBody"></tbody>
+    </table>
+
+    <h2>Trainer Analysis</h2>
+    <div id="analysisSection">
+      <div class="analysis-empty">Trainer analysis will appear here once published.</div>
+    </div>
+  </div>
+
+  <script src="user-session-responses.js"></script>
+</body>
+</html>
+{
+  "cells": [],
+  "metadata": {
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 2
+}

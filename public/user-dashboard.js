@@ -88,9 +88,8 @@ function renderSessions(sessions) {
 function joinSession(sessionId, status) {
     if (status === 'active') {
         location.href = `scenario-game.html?sessionId=${sessionId}`;
-    } else if (status === 'completed' || status === 'submitted') {
-        // For now, redirect to scenario game which will show the summary
-        location.href = `scenario-game.html?sessionId=${sessionId}`;
+    } else if (status === 'completed' || status === 'submitted' || status === 'analysing' || status === 'pending_analysis') {
+        location.href = `user-session-responses.html?sessionId=${sessionId}`;
     }
 }
 
