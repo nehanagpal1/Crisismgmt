@@ -314,7 +314,8 @@ IMPORTANT:
       jsonText = jsonMatch[0];
     }
     
-    const analysis = JSON.parse(jsonText);
+    const sanitizedJson = sanitizeJsonOutput(jsonText);
+    const analysis = JSON.parse(sanitizedJson);
     
     // Ensure all required fields exist
     return {
@@ -328,7 +329,9 @@ IMPORTANT:
     };
   } catch (e) {
     console.error('[AI] ❌ Gemini API ERROR for analysis:', e?.message || e);
-    
+    if (e?.stack) {
+      console.error('[AI] Stack:', e.stack);
+    }
     // Return fallback analysis
     return {
       behaviouralInterpretation: {
@@ -340,6 +343,16 @@ IMPORTANT:
       teamPerformance: 'Unable to generate AI analysis. Please evaluate the overall team performance and individual contributions based on the responses provided.'
     };
   }
+}
+
+function sanitizeJsonOutput(text) {
+  let cleaned = text
+    .replace(/```json|```/gi, '')
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, '\'')
+    .replace(/,\s*(\}|\])/g, '$1') // remove trailing commas
+    .trim();
+  return cleaned;
 }
 
 module.exports = { generateNextScenario, generateAnalysis, usingGemini };
