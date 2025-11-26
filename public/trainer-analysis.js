@@ -155,9 +155,10 @@ async function generateAiAnalysis() {
     }
     const analysis = await res.json();
     fillFields(analysis);
-    if (feedback) {
-      feedback.textContent = 'AI analysis generated. You can fine-tune it before submitting.';
-      feedback.classList.add('show');
+    const aiFeedback = document.getElementById('aiFeedbackMsg');
+    if (aiFeedback) {
+      aiFeedback.textContent = 'AI analysis generated. You can fine-tune it before submitting.';
+      aiFeedback.style.display = 'block';
     }
   } catch (e) {
     alert(e.message || 'Failed to generate AI analysis');
