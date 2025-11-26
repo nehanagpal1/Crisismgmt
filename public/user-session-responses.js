@@ -1,10 +1,11 @@
 function showLoading(show = true) {
   const overlay = document.getElementById('loadingOverlay');
-  if (!overlay) return;
-  overlay.classList.toggle('hidden', !show);
+  if (overlay) {
+    overlay.classList.toggle('hidden', !show);
+  }
 }
 
-function getQueryParam(name) {
+function getQuery(name) {
   return new URLSearchParams(window.location.search).get(name);
 }
 
@@ -30,7 +31,7 @@ async function loadResponses(id) {
   return res.json();
 }
 
-function renderInfo(session) {
+function renderSessionInfo(session) {
   const info = document.getElementById('info');
   if (!session) {
     info.textContent = 'Session not found or you do not have access.';
@@ -43,22 +44,27 @@ function renderInfo(session) {
 
   info.innerHTML = `
     <div><strong>Scenario:</strong> ${session.scenario?.title || 'Untitled Scenario'}</div>
-    <div style="margin-top:6px;"><strong>Status:</strong> ${session.status}</div>
-    <div style="margin-top:6px;"><strong>Team:</strong> ${members || 'Not available'}</div>
+    <div style="margin-top:8px;"><strong>Status:</strong> <span style="color:#60a5fa;font-weight:600;">${session.status}</span></div>
+    <div style="margin-top:8px;"><strong>Team Members:</strong> ${members || 'Not available'}</div>
   `;
 }
 
 function renderResponses(rows) {
   const body = document.getElementById('respBody');
   body.innerHTML = '';
+
   if (!rows || rows.length === 0) {
-    body.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#94a3b8;">No responses recorded yet.</td></tr>`;
+    body.innerHTML = `
+      <tr>
+        <td colspan="3" style="text-align:center;color:#94a3b8;padding:32px;">No responses recorded yet.</td>
+      </tr>
+    `;
     return;
   }
 
   rows.forEach(row => {
-    const tr = document.createElement('tr');
     const responder = row.customName || row.userId?.username || 'Participant';
+    const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${row.roundNumber}</td>
       <td>${row.scenarioText || ''}</td>
@@ -70,8 +76,8 @@ function renderResponses(rows) {
 
 function renderAnalysis(session) {
   const analysisDiv = document.getElementById('analysisSection');
-  if (!session || session.status === 'active' || session.status === 'submitted') {
-    analysisDiv.innerHTML = '<div class="analysis-empty">Trainer analysis has not been published yet.</div>';
+  if (!session || !session.behaviouralInterpretation || session.status === 'active' || session.status === 'submitted') {
+    analysisDiv.innerHTML = '<p style="color:#888;font-style:italic;text-align:center;">Trainer analysis has not been published yet.</p>';
     return;
   }
 
@@ -81,9 +87,9 @@ function renderAnalysis(session) {
     <p><strong>Emotional Tone:</strong> ${bi.emotionalTone || 'N/A'}</p>
     <p><strong>Cognitive State:</strong> ${bi.cognitiveState || 'N/A'}</p>
     <p><strong>Behavioural Signals:</strong> ${bi.behaviouralSignals || 'N/A'}</p>
-    <h3 style="margin-top:20px;">2. What could have been better</h3>
+    <h3 style="margin-top:16px;">2. What could have been better</h3>
     <p>${session.whatCouldBeBetter || 'N/A'}</p>
-    <h3 style="margin-top:20px;">3. How each team performed</h3>
+    <h3 style="margin-top:16px;">3. How each team performed</h3>
     <p>${session.teamPerformance || 'N/A'}</p>
   `;
 }
@@ -91,19 +97,19 @@ function renderAnalysis(session) {
 showLoading(true);
 ensureUser().then(async (user) => {
   if (!user) return;
-  const sessionId = getQueryParam('sessionId');
+  const sessionId = getQuery('sessionId');
   if (!sessionId) {
     document.getElementById('info').textContent = 'Missing sessionId parameter.';
     showLoading(false);
     return;
   }
 
-  const [session, responses] = await Promise.all([
-    loadSessionDetail(sessionId),
-    loadResponses(sessionId)
+  const [responses, session] = await Promise.all([
+    loadResponses(sessionId),
+    loadSessionDetail(sessionId)
   ]);
 
-  renderInfo(session);
+  renderSessionInfo(session);
   renderResponses(responses);
   renderAnalysis(session);
   showLoading(false);

@@ -15,15 +15,15 @@ function displayAnalysis(session) {
     return;
   }
   const bi = session.behaviouralInterpretation || {};
-  let html = '<div style="border:1px solid #ddd;padding:16px;border-radius:8px;background:#fafbff;">';
-  html += '<h3>1. Behavioural Interpretation</h3>';
-  html += `<p><strong>Emotional Tone:</strong> ${bi.emotionalTone || 'N/A'}</p>`;
-  html += `<p><strong>Cognitive State:</strong> ${bi.cognitiveState || 'N/A'}</p>`;
-  html += `<p><strong>Behavioural Signals:</strong> ${bi.behaviouralSignals || 'N/A'}</p>`;
-  html += '<h3 style="margin-top:16px;">2. What could have been better</h3>';
-  html += `<p>${session.whatCouldBeBetter || 'N/A'}</p>`;
-  html += '<h3 style="margin-top:16px;">3. How each team performed</h3>';
-  html += `<p>${session.teamPerformance || 'N/A'}</p>`;
+  let html = '<div style="border:1px solid #2d3748;padding:20px;border-radius:12px;background:#1a1f2e;color:#e2e8f0;">';
+  html += '<h3 style="font-size:16px;color:#3b82f6;margin:0 0 12px 0;">1. Behavioural Interpretation</h3>';
+  html += `<p style="color:#94a3b8;margin:8px 0;"><strong style="color:#cbd5e1;">Emotional Tone:</strong> ${bi.emotionalTone || 'N/A'}</p>`;
+  html += `<p style="color:#94a3b8;margin:8px 0;"><strong style="color:#cbd5e1;">Cognitive State:</strong> ${bi.cognitiveState || 'N/A'}</p>`;
+  html += `<p style="color:#94a3b8;margin:8px 0;"><strong style="color:#cbd5e1;">Behavioural Signals:</strong> ${bi.behaviouralSignals || 'N/A'}</p>`;
+  html += '<h3 style="font-size:16px;color:#3b82f6;margin:20px 0 12px 0;">2. What could have been better</h3>';
+  html += `<p style="color:#94a3b8;margin:8px 0;">${session.whatCouldBeBetter || 'N/A'}</p>`;
+  html += '<h3 style="font-size:16px;color:#3b82f6;margin:20px 0 12px 0;">3. How each team performed</h3>';
+  html += `<p style="color:#94a3b8;margin:8px 0;">${session.teamPerformance || 'N/A'}</p>`;
   html += '</div>';
   analysisDiv.innerHTML = html;
 }

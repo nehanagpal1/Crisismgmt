@@ -123,6 +123,7 @@ function renderActiveSessions(sessions) {
   pageSessions.forEach(session => {
     const card = document.createElement('div');
     card.className = 'session-card-modern';
+    const isActive = session.status === 'active';
     
     // Get team members info
     let teamInfo = '';
@@ -148,9 +149,10 @@ function renderActiveSessions(sessions) {
           <div class="participants-info">${teamInfo}</div>
         </div>
         <div class="session-actions">
-          <button class="btn-monitor" onclick="location.href='${monitorUrl}'">
-            Monitor Session
-          </button>
+          ${isActive ? `
+            <button class="btn-monitor" onclick="location.href='${monitorUrl}'">
+              Monitor Session
+            </button>` : ''}
           <button class="btn-archive-session" onclick="archiveSession('${session._id}')">
             Archive
           </button>

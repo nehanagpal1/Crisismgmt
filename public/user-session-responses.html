@@ -2,17 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Session Responses</title>
+  <title>Response and Analysis</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    body { background: #0f1419; color: #e2e8f0; }
-    .dashboard-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px 32px 60px;
-      min-height: 100vh;
+    body {
       background: #0f1419;
+      color: #e2e8f0;
     }
+    
+    .dashboard-container {
+      background: #0f1419;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 40px;
+      min-height: 100vh;
+    }
+    
     .page-header {
       display: flex;
       justify-content: space-between;
@@ -21,11 +26,20 @@
       padding-bottom: 20px;
       border-bottom: 1px solid #1e293b;
     }
+    
     h1 {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 600;
+      color: #ffffff;
       margin: 0;
+      text-align: left;
     }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+    
     .nav-link {
       color: #3b82f6;
       text-decoration: none;
@@ -33,58 +47,109 @@
       padding: 8px 16px;
       border: 1px solid #334155;
       border-radius: 8px;
+      transition: all 0.2s;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
-    .nav-link:hover { background: #1e293b; border-color: #3b82f6; }
+    
+    .nav-link:hover {
+      background: #1e293b;
+      border-color: #3b82f6;
+      color: #60a5fa;
+    }
+    
     #info {
       background: #1a1f2e;
       border: 1px solid #2d3748;
-      border-radius: 12px;
       padding: 16px 20px;
+      border-radius: 12px;
       margin-bottom: 24px;
       font-size: 14px;
       color: #94a3b8;
     }
-    h2 { font-size: 20px; font-weight: 600; margin: 32px 0 16px 0; }
+    
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      margin: 32px 0 16px 0;
+      text-align: left;
+    }
+    
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 16px;
       background: #1a1f2e;
       border: 1px solid #2d3748;
       border-radius: 12px;
       overflow: hidden;
     }
-    th {
-      padding: 14px 16px;
-      font-size: 12px;
-      color: #94a3b8;
+    
+    table thead {
+      background: #0f1419;
+    }
+    
+    table th {
+      padding: 16px 20px;
+      text-align: left;
       font-weight: 600;
+      color: #94a3b8;
+      font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       border-bottom: 1px solid #2d3748;
     }
-    td {
-      padding: 16px;
-      font-size: 13px;
+    
+    table td {
+      padding: 18px 20px;
       color: #e2e8f0;
+      font-size: 14px;
       border-bottom: 1px solid #2d3748;
       vertical-align: top;
     }
-    table tbody tr:last-child td { border-bottom: none; }
+    
+    table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    table tbody tr:hover {
+      background: rgba(59, 130, 246, 0.05);
+    }
+    
     #analysisSection {
       background: #1a1f2e;
       border: 1px solid #2d3748;
-      border-radius: 12px;
       padding: 20px 24px;
+      border-radius: 12px;
+      margin-top: 16px;
     }
-    #analysisSection h3 { color: #3b82f6; margin-top: 0; }
-    #analysisSection p { color: #94a3b8; line-height: 1.6; }
+    
+    #analysisSection h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #3b82f6;
+      margin: 0 0 12px 0;
+    }
+    
+    #analysisSection p {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.7;
+      margin: 8px 0;
+    }
+    
+    #analysisSection strong {
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+    
     .analysis-empty {
       text-align: center;
-      padding: 32px 0;
+      padding: 40px 20px;
       color: #64748b;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -96,8 +161,12 @@
 
   <div class="dashboard-container">
     <div class="page-header">
-      <h1>Session Responses</h1>
-      <a href="/user-dashboard.html" class="nav-link"><span>←</span> Back to Dashboard</a>
+      <h1>Response and Analysis</h1>
+      <div class="header-actions">
+        <a href="/user-dashboard.html" class="nav-link">
+          <span>←</span> Back to Dashboard
+        </a>
+      </div>
     </div>
 
     <div id="info">Loading session info...</div>
@@ -107,7 +176,7 @@
       <thead>
         <tr>
           <th style="width:80px;">Round</th>
-          <th style="width:40%;">Scenario</th>
+          <th style="width:35%;">Scenario</th>
           <th>Response</th>
         </tr>
       </thead>
@@ -123,13 +192,3 @@
   <script src="user-session-responses.js"></script>
 </body>
 </html>
-{
-  "cells": [],
-  "metadata": {
-    "language_info": {
-      "name": "python"
-    }
-  },
-  "nbformat": 4,
-  "nbformat_minor": 2
-}
