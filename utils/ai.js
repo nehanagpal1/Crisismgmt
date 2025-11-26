@@ -9,8 +9,8 @@ let model = null;
 
 if (usingGemini) {
   genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-  model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // Updated to correct model name
-  console.log('[AI] Google Gemini client initialized with gemini-1.5-flash');
+  model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' }); // Use stable latest model
+  console.log('[AI] Google Gemini client initialized with gemini-1.5-flash-latest');
 } else {
   console.log('[AI] GEMINI_API_KEY not set - using fallback generator');
 }
